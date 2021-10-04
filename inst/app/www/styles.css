@@ -1,0 +1,74 @@
+
+
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  grid-template-rows: 54px 77px 1fr;
+  grid-template-areas: "sidenav header" "sidenav title2" "sidenav main";
+  height: 100vh;
+}
+
+.header {
+  grid-area: header;
+  background-color: #fff;
+  padding: 6px 0px 11px 10px;
+}
+
+.title2 {
+  grid-area: title2;
+  background-color: #a2b21e;
+}
+
+.main {
+  grid-area: main;
+  background-color: #faf9f8;
+  padding-left: 41px;
+  padding-right: 33px;
+  padding-top: 33px;
+  max-width: calc(100vw - 400px);
+  max-height: calc(100vh - 100px);
+  overflow: auto;
+}
+
+/* .footer {
+  grid-area: footer;
+  background-color: #f3f2f1;
+  padding: 12px 20px;
+} */
+
+.sidenav {
+  grid-area: sidenav;
+  background-color: #241b3e;
+  padding: 25px;
+}
+
+body {
+  background-color: rgba(225, 223, 221, 0.2);
+  min-height: 611px;
+  margin: 0;
+}
+
+.page-title {
+  padding: 52px 0px;
+}
+
+.card {
+  background: #e9ecefff;
+  padding: 28px;
+  margin-bottom: 28px;
+  border-radius: 2px;
+  background-clip: padding-box;
+}
+
+.ms-Nav-compositeLink:hover .ms-Nav-linkText {
+  color: #000;
+}
+
+.is-selected .ms-Nav-linkText {
+  color: #000;
+}
+
+/* .linkText-73 {
+  color: #fff;
+} */
