@@ -1,14 +1,21 @@
 Package: psychtopics
 Title: PsychTopics
 Version: 0.0.0.9000
-Authors@R: person('Zauad Shahreer', 'Abeer', email = 'shahreyar.abeer@gmail.com', role = c('cre', 'aut'))
-Description: An R Shiny app to explore current and past research trends in psychology from the German-speaking countries.
+Authors@R: 
+    person(given = "Zauad Shahreer",
+           family = "Abeer",
+           role = c("cre", "aut"),
+           email = "shahreyar.abeer@gmail.com")
+Description: An R Shiny app to explore current and past research trends in
+    psychology from the German-speaking countries.
 License: GPL (>= 3)
 Imports: 
     config (>= 0.3.1),
+    glue,
     golem (>= 0.3.1),
     shiny (>= 1.6.0),
-    shiny.fluent
+    shiny.fluent,
+    shiny.router
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
