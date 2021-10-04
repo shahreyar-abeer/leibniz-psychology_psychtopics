@@ -31,8 +31,8 @@ mod_start_ui <- function(id){
         size = 6
       ),
       makeCard(
-        title = "Topic Trends",
-        content = Text("Here you can browse all topics included in the model."),
+        title = "Tutorial video",
+        content = Text("A tutorial video will be added here"),
         size = 6
       )
     ),
@@ -41,13 +41,28 @@ mod_start_ui <- function(id){
       horizontal = TRUE,
       tokens = list(childrenGap = 33),
       makeCard(
-        title = uiOutput(ns("title3")),
-        content = Text("Here you can browse all topics included in the model."),
+        title = uiOutput(ns("title_box3")),
+        content = tagList(
+          bodyText("Please note that these topics are preliminary!"),
+          br(),
+          plotOutput(ns("plot_box3"), height = 300)
+        ),
         size = 6
       ),
       makeCard(
         title = "Overall Most Popular Topics in PSYNDEX",
-        content = Text("Here you can browse all topics included in the model."),
+        content = tagList(
+          shiny.fluent::Dropdown.shinyInput(
+            inputId = ns("dropdown_box4"),
+            options = list(
+              list(key = "A", text = "Option A"),
+              list(key = "B", text = "Option B"),
+              list(key = "C", text = "Option C")
+            )
+          ),
+          br(),
+          plotOutput(ns("plot_box4"), height = 300)
+        ),
         size = 6
       )
     )
@@ -63,8 +78,16 @@ mod_start_server <- function(id){
     
     x = 2021
     
-    output$title3 = renderUI({
+    output$title_box3 = renderUI({
       glue::glue("Popular PSYNDEX Topics in {x}")
+    })
+    
+    output$plot_box3 = renderPlot({
+      shinipsum::random_ggplot(type = "bar")
+    })
+    
+    output$plot_box4 = renderPlot({
+      shinipsum::random_ggplot(type = "bar")
     })
   })
 }
