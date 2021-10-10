@@ -61,6 +61,9 @@ title2 = tagList(
 
 
 navigation <- Nav(
+  
+  IconButton.shinyInput("menu"),
+  
   groups = list(
     list(links = list(
       list(name = 'Start', url = '#!/', key = 'home'),
@@ -75,6 +78,7 @@ navigation <- Nav(
   styles = list(
     linkText = list(
       fontWeight = 600,
+      fontSize = 15,
       color = "white",
       ":hover" = list(
         color = "black"
@@ -82,11 +86,21 @@ navigation <- Nav(
     ),
     root = list(
       height = '100%',
+      width = "100%",
       boxSizing = 'border-box',
-      overflowY = 'auto'
+      overflowY = 'auto',
+      overflowX = "hidden"
+      # transition = 'width 0.3s ease-in-out',
+      # selectors = list(
+      #   ":hover" = list(
+      #     width = "100%"
+      #   )
+      # )
     )
   )
 )
+
+menu = IconButton.shinyInput("menu", iconProps = list(iconName = "CollapseMenu"))
 
 
 # footer <- Stack(
@@ -105,7 +119,8 @@ layout <- function(mainUI){
       div(class = "header", header),
       div(class = "title2", title2),
       div(class = "sidenav", navigation),
-      div(class = "main", mainUI)
+      div(class = "main", mainUI),
+      div(class = "menu", menu)
       #div(class = "footer", footer)
   )
 }

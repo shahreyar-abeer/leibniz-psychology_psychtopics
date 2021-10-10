@@ -10,10 +10,10 @@
 mod_start_ui <- function(id){
   ns <- NS(id)
   tagList(
-    shiny.fluent::Stack(
-      horizontal = TRUE,
-      tokens = list(childrenGap = 33),
+    div(
+      class = "start-cards",
       makeCard(
+        size = 11,
         title = "About PsychTopics",
         style = "background-color: #c6cf78ff",
         content = tagList(
@@ -21,35 +21,32 @@ mod_start_ui <- function(id){
           br(),
           br(),
           bodyText(tagList("Conclusions should be drawn carefully, as topics are derived from the ",
-                       tags$a("PSYNDEX database", href = "http://www.psyndex.de", target = "_blank"),
-                       tags$b(" automatically using machine learning algorithms."), 
-                       " PsychTopics is in an experimental state, makes no claim to completeness and cannot replace specific search strategies.")),
+                           tags$a("PSYNDEX database", href = "http://www.psyndex.de", target = "_blank"),
+                           tags$b(" automatically using machine learning algorithms."), 
+                           " PsychTopics is in an experimental state, makes no claim to completeness and cannot replace specific search strategies.")),
           br(),
           br(),
           bodyText("PsychTopics is updated quarterly. Last update: [date_update")
-        ),
-        size = 6
+        )
       ),
       makeCard(
+        size = 11,
         title = "Tutorial video",
-        content = Text("A tutorial video will be added here"),
-        size = 6
-      )
-    ),
-    
-    shiny.fluent::Stack(
-      horizontal = TRUE,
-      tokens = list(childrenGap = 33),
+        content = Text("A tutorial video will be added here")
+      ),
+      
       makeCard(
+        size = 11,
         title = uiOutput(ns("title_box3")),
         content = tagList(
           bodyText("Please note that these topics are preliminary!"),
           br(),
           plotOutput(ns("plot_box3"), height = 300)
-        ),
-        size = 6
+        )
       ),
+      
       makeCard(
+        size = 11,
         title = "Overall Most Popular Topics in PSYNDEX",
         content = tagList(
           shiny.fluent::Dropdown.shinyInput(
@@ -62,9 +59,9 @@ mod_start_ui <- function(id){
           ),
           br(),
           plotOutput(ns("plot_box4"), height = 300)
-        ),
-        size = 6
+        )
       )
+      
     )
   )
 }
