@@ -13,3 +13,11 @@ router <- shiny.router::make_router(
   route("browse-topics", mod_browse_topics_ui("browse")),
   route("popular", mod_popular_by_year_ui("popular"))
 )
+
+
+
+# colors ----
+
+col_bars <- "#0094c5"
+col_highlight <- "gold"
+# colors in tags$style have to be set manually in respective lines
