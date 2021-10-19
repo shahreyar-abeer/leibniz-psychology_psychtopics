@@ -2,7 +2,7 @@
 
 
 
-@media (min-width: 1200px) {
+@media (min-width: 1250px) {
   .grid-container {
     display: grid;
     grid-template-columns: 15% 85%;
@@ -24,15 +24,25 @@
   
   .start-cards {
     display: grid;
-    column-gap: 33px;
-    row-gap: 33px;
+    column-gap: 27px;
+    row-gap: 27px;
     grid-template-columns: 49% 49%;
+  }
+  
+  .browse-cards {
+    display: grid;
+    column-gap: 33px;
+    grid-template-columns: 31% 31% 31%;
+  }
+  
+  .browse-box4 {
+    width: calc(90.5% + 66px);
   }
 
 }
 
 
-@media (max-width: 1200px) {
+@media (max-width: 1250px) {
   .grid-container {
     display: grid;
     grid-template-columns: 20% 80%;
@@ -49,9 +59,19 @@
   
   .start-cards {
     display: grid;
-    column-gap: 33px;
+    column-gap: 39px;
     row-gap: 33px;
     grid-template-columns: 47% 47%;
+  }
+  
+  .browse-cards {
+    display: grid;
+    row-gap: 33px;
+    grid-template-columns: 100%;
+  }
+  
+  .browse-box4 {
+    width: 91.66%;
   }
   
   .menu {
@@ -80,6 +100,8 @@
     grid-template-columns: 100%;
     row-gap: 21px;
   }
+  
+  
   
 }
 

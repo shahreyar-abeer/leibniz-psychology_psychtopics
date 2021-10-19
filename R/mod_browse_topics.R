@@ -10,38 +10,41 @@
 mod_browse_topics_ui <- function(id){
   ns <- NS(id)
   tagList(
-    shiny.fluent::Stack(
-      horizontal = TRUE,
-      tokens = list(childrenGap = 17),
+    
+    div(
+      class = "browse-cards",
+      
       makeCard(
         title = "Browse PSYNDEX Topics",
         content = bodyText("Here you can browse all topics included in the model."),
-        size = 4
+        size = 11
       ),
       makeCard(
         title = "Topic Trends",
-        size = 4,
+        size = 11,
         content = tagList(
           echarts4r::echarts4rOutput(ns("plot_box2"))
         )
       ),
       makeCard(
-        title = "Share of Empirical Researc",
+        title = "Share of Empirical Research",
         content = Text("Here you can browse all topics included in the model."),
-        size = 4
+        size = 11
       )
     ),
-    
-    shiny.fluent::Stack(
-      
+    br(),
+    div(
+      class = "browse-box4",
       makeCard(
         title = "Topic Details",
         size = 12,
         content = tagList(
-          #plotOutput(ns("plot1"))
+          DT::DTOutput(ns("plot1"))
         )
       )
     )
+      
+      
     
   )
 }
@@ -52,6 +55,10 @@ mod_browse_topics_ui <- function(id){
 mod_browse_topics_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+    
+    output$plot1 = DT::renderDT({
+      shinipsum::random_DT(10, 15)
+    })
     
     output$plot_box2 = echarts4r::renderEcharts4r({
       req(r$theta_mean_by_year, r$topic, r$browse_top_3)
@@ -76,9 +83,7 @@ mod_browse_topics_server <- function(id, r){
         echarts4r::e_tooltip()
       
       
-      
-      
-      
+     
       # df = d1 %>%
       #   dplyr::filter(id %in% 1:3) %>% 
       #   #dplyr::arrange(-Freq) %>% 
