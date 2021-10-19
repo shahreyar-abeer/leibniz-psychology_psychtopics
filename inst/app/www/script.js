@@ -1,12 +1,11 @@
-$( document ).ready(function() {
- 
-});
 
 $(document).ready(function() {
-
+  
+  
+  //$("#start-dropdown_most_popular2").hide();
   
   $('#menu').click(function(e) {
-    console.log("clicked");
+    //console.log("clicked");
     
     $(".sidenav").toggleClass("sidenav-opened");
     $(".main").toggleClass("main-opened");

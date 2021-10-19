@@ -33,7 +33,7 @@ app_server <- function( input, output, session ) {
   
   
   mod_start_server("start", r)
-  mod_browse_topics_server("browse")
+  mod_browse_topics_server("browse", r)
   mod_popular_by_year_server("popular")
   
   router$server(input, output, session)

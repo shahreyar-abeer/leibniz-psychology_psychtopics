@@ -31,8 +31,8 @@ makeCard <- function(title, content, size = 12, style = "") {
   )
 }
 
-bodyText = function(text) {
-  Text(text, styles = list(root = list(fontSize = 17)))
+bodyText = function(text, ...) {
+  Text(text, styles = list(root = list(fontSize = 17)), ...)
 }
 
 
