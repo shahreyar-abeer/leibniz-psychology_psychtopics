@@ -13,10 +13,21 @@ mod_browse_topics_ui <- function(id){
     
     div(
       class = "browse-cards",
-      
+
       makeCard(
         title = "Browse PSYNDEX Topics",
-        content = bodyText("Here you can browse all topics included in the model."),
+        style = "background-color: #c6cf78ff",
+        content = tagList(
+          
+          bodyText("Here you can browse all topics included in the model."),
+          br(),
+          bodyText("Select topics in the table below for adding them to the plots."),
+          br(),
+          bodyText("For Trends, only records from 1980 to [current_year - 1] are included, since publications of the current year are not yet fully covered. (learn more)")
+        ),
+          
+          
+
         size = 11
       ),
       makeCard(
@@ -39,7 +50,7 @@ mod_browse_topics_ui <- function(id){
         title = "Topic Details",
         size = 12,
         content = tagList(
-          DT::DTOutput(ns("plot1"))
+          reactable::reactableOutput(ns("topics_table"))
         )
       )
     )
@@ -56,14 +67,24 @@ mod_browse_topics_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    output$plot1 = DT::renderDT({
-      shinipsum::random_DT(10, 15)
+    topic = reactive({
+      r$topic %>% 
+        dplyr::mutate(
+          id = Nr..,
+          topic = Thema,
+          freq = round(Prävalenz * 100, 2),
+          search = createLink(topic, r$booster, id)
+        ) %>% 
+        dplyr::arrange(-freq) %>% 
+        dplyr::select(-c(Nr.., Prävalenz, Thema))
     })
     
     output$plot_box2 = echarts4r::renderEcharts4r({
-      req(r$theta_mean_by_year, r$topic, r$browse_top_3)
+      req(r$theta_mean_by_year, r$topic, id_selected())
       
       #print(str(d1))
+      
+      print(id_selected())
       
       color <- "#241b3e"
       
@@ -75,65 +96,65 @@ mod_browse_topics_server <- function(id, r){
           id = as.numeric(as.character(Var2)),
           Freq = round(Freq * 100, 2)
         ) %>%
-        dplyr::filter(id %in% r$browse_top_3) %>% 
+        dplyr::filter(id %in% id_selected()) %>% 
         dplyr::group_by(id) %>% 
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(Freq) %>% 
         echarts4r::e_x_axis(min = 1980, max = 2019) %>% 
         echarts4r::e_tooltip()
       
-      
-     
-      # df = d1 %>%
-      #   dplyr::filter(id %in% 1:3) %>% 
-      #   #dplyr::arrange(-Freq) %>% 
-      #   #dplyr::slice_head(n = top) %>% 
-      #   dplyr::mutate(Freq = round(Freq * 100, 2))
-      #   #dplyr::left_join(r$topic, by = c("id" = "Nr..")) %>% 
-      #   #dplyr::mutate(topic_split = stringr::str_split(Thema, ","))
-      # 
-      # 
-      # hch1 = df %>%
-      #   highcharter::hchart(
-      #     "line",
-      #     highcharter::hcaes(x = "year", y = "Freq", group = "Var2"),
-      #     #name = "Prevalence",
-      #     #colorByPoint = TRUE,
-      #     borderColor = "black"
-      #     # dataLabels = list(
-      #     #   enabled = TRUE,
-      #     #   align = "right",
-      #     #   x = -33,
-      #     #   color = "#fff",
-      #     #   style = list(fontSize = 13),
-      #     #   formatter = JS('
-      #     #   function() {
-      #     #     return this.point.topicSplit.slice(0, 2);
-      #     #   }'
-      #     #   )
-      #     # )
-      #   ) %>% 
-      #   highcharter::hc_chart(
-      #     plotBorderColor = "#aaa",
-      #     plotBorderWidth = 2
-      #   ) %>% 
-      #   #highcharter::hc_colors(color) %>%
-      #   #highcharter::hc_xAxis(title = list(text = ""), labels = list(style = list(fontSize = "17px")), gridLineColor = 'transparent') %>% 
-      #   #highcharter::hc_yAxis(title = list(text = "Prevalence"), gridLineColor = 'transparent') %>% 
-      #   #highcharter::hc_add_theme(highcharter::hc_theme_google()) %>% 
-      #   highcharter::hc_title(text = glue::glue("Popular topics in 2019"), style = list(fontSize = "21px")) %>% 
-      #   # highcharter::hc_tooltip(
-      #   #   pointFormat = "ID: {point.id} <br/> Prevalence: {point.y} <br/> Topic: {point.topic}",
-      #   #   headerFormat = "",
-      #   #   style = list(fontSize = "15px", opacity = 1),
-      #   #   borderWidth = 2,
-      #   #   backgroundColor = "#fff",
-      #   #   hideDelay = 333
-      #   # ) %>% 
-      #   highcharter::hc_size(height = 450)
-      # 
-      
     })
+    
+    output$topics_table = reactable::renderReactable({
+      topic() %>% 
+        reactable::reactable(
+          rownames = FALSE,
+          searchable = TRUE,
+          sortable = FALSE,
+          selection = "multiple",
+          defaultSelected = 1:3,
+          onClick = "select",
+          theme = reactable::reactableTheme(
+            rowSelectedStyle = list(backgroundColor = "#aaa", boxShadow = "inset 2px 0 0 0 #ffa62d")
+          ),
+          columns = list(
+            id = reactable::colDef(
+              name = "ID"
+            ),
+            search = reactable::colDef(
+              name = "Search",
+              html = TRUE
+            ),
+            freq = reactable::colDef(
+              name = "Prevalence"
+            ),
+            .selection = reactable::colDef(
+              show = FALSE
+            )
+          )
+          
+        )
+    })
+    
+    selected <- reactive(reactable::getReactableState("topics_table", "selected"))
+    
+    id_selected = reactive({
+      topic()[selected(), ] %>%
+        dplyr::select(id) %>%  
+        dplyr::pull()
+    })
+    
+    
+    output$topiclist <- DT::renderDataTable({
+      topic <- topic[(grepl(search_lower(), topic$Thema)),]
+      topicnum <- topic[,1]
+      topic$Recherche <- createLink(topic$Thema, booster, topicnum)
+      topic[,3] <- round(topic[,3], 4)*100
+      names(topic) <- c("ID", "Topic", "Prevalence", "Search")
+      return(topic)
+    }, escape = FALSE, selection = list(mode = "single", selected = 1), rownames = FALSE, class = 'stripe', extensions = 'Responsive',
+    options = list(lengthChange = TRUE, info = TRUE, paging = TRUE, searching = FALSE))
+    
     
     
   })

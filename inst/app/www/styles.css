@@ -108,7 +108,7 @@
 
 
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .grid-container {
     display: grid;
     grid-template-columns: min-content 1fr;
