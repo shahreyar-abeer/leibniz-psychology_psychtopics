@@ -124,14 +124,15 @@ mod_start_server <- function(id, r){
     ns <- session$ns
     
     output$last_update = renderUI({
-      
+      req(r$theta_mean_by_year)
       ## update these two line by hand
       date_updated = "18th Oct, 2021"
-      latest_year = 2019
+      current_year = 2019
       
       ##---
       
-      r$latest_year = 2019
+      r$current_year = current_year
+      r$last_updated = date_updated
       glue::glue("PsychTopics is updated quarterly. Last update: {date_updated}")
     })
     # 
@@ -140,37 +141,36 @@ mod_start_server <- function(id, r){
     # }, once = TRUE)
     
     output$title_box3 = renderUI({
-      req(r$theta_mean_by_year, r$topic, r$latest_year)
+      req(r$current_year)
       #x = 2019
-      glue::glue("Popular PSYNDEX Topics in {r$latest_year}")
+      glue::glue("Popular PSYNDEX Topics in {r$current_year}")
     })
     
     
 
     output$plot_box3 = echarts4r::renderEcharts4r({
-      req(r$theta_mean_by_year, r$topic, r$latest_year, input$dropdown_most_popular1)
+      req(r$n_doc_year, r$topic, r$current_year, input$dropdown_most_popular1)
 
-      d1 = as.data.frame(as.table(r$theta_mean_by_year)) %>%
-        dplyr::mutate(year = as.numeric(as.character(Var1)), id = as.numeric(as.character(Var2)))
+      # d1 = as.data.frame(as.table(r$n_doc_year)) %>%
+      #   dplyr::mutate(year = as.numeric(as.character(Var1)), label = Var2)
       #print(str(d1))
-
+      
+      
+      d1 = r$n_doc_year
+      
       color <- "#241b3e"
 
       top = input$dropdown_most_popular1
 
-      height = dplyr::case_when(
-        top == 5 ~ 500,
-        top == 10 ~ 550,
-        top == 15 ~ 600,
-        top == 20 ~ 650
-      )
-
       df = d1 %>%
-        dplyr::filter(year == r$latest_year) %>%
-        dplyr::arrange(-Freq) %>%
-        dplyr::slice_head(n = top) %>%
-        dplyr::mutate(Freq = round(Freq * 100, 2)) %>%
-        dplyr::left_join(r$topic, by = c("id" = "Nr..")) %>% 
+
+        #dplyr::arrange(-Freq) %>%
+        #dplyr::slice_head(n = top) %>%
+        #dplyr::mutate(Freq = round(Freq * 100, 2)) %>%
+        dplyr::left_join(r$topic, by = c("id" = "ID")) %>% 
+        dplyr::filter(year == r$current_year) %>%
+        dplyr::arrange(-Freq) %>% 
+        dplyr::slice_head(n = top) %>% 
         dplyr::mutate(
           id2 = as.factor(id)
         )
@@ -179,8 +179,8 @@ mod_start_server <- function(id, r){
       #print(str(df))
       
       df %>% 
-        echarts4r::e_charts(Var2) %>% 
-        echarts4r::e_bar(Freq, name = "Prevalence", bind = Thema) %>% 
+        echarts4r::e_charts(id2) %>% 
+        echarts4r::e_bar(Freq, name = "n-docs", bind = TopTerms) %>% 
         echarts4r::e_title(text = glue::glue("Popular topics in {r$latest_year}")) %>% 
         echarts4r::e_flip_coords() %>% 
         echarts4r::e_y_axis(inverse = TRUE) %>% 
@@ -189,7 +189,7 @@ mod_start_server <- function(id, r){
           formatter = htmlwidgets::JS("
             function(params){
               return('ID: ' + params.value[1] + 
-                      '<br/> Prevalence: ' + params.value[0]) + 
+                      '<br/> N docs: ' + params.value[0]) + 
                       '<br/> Topic: ' + params.name
                       }
           ")
@@ -207,91 +207,46 @@ mod_start_server <- function(id, r){
         echarts4r::e_color(color = color)
       
       
-      
-      
-    #   
-    #   
-    #   hch1 = df %>%
-    #     highcharter::hchart(
-    #       "bar",
-    #       highcharter::hcaes(x = "Var2", y = "Freq", topic = "Thema", topicSplit = "topic_split"),
-    #       name = "Prevalence",
-    #       #colorByPoint = TRUE,
-    #       borderColor = "black",
-    #       dataLabels = list(
-    #         enabled = TRUE,
-    #         align = "right",
-    #         x = -33,
-    #         color = "#fff",
-    #         style = list(fontSize = 13),
-    #         formatter = JS('
-    #         function() {
-    #           return this.point.topicSplit.slice(0, 2);
-    #         }'
-    #         )
-    #       )
-    #     ) %>% 
-    #     highcharter::hc_chart(
-    #       plotBorderColor = "#aaa",
-    #       plotBorderWidth = 2
-    #     ) %>% 
-    #     highcharter::hc_colors(color) %>%
-    #     highcharter::hc_xAxis(title = list(text = ""), labels = list(style = list(fontSize = "17px")), gridLineColor = 'transparent') %>% 
-    #     highcharter::hc_yAxis(title = list(text = "Prevalence"), gridLineColor = 'transparent') %>% 
-    #     highcharter::hc_add_theme(highcharter::hc_theme_google()) %>% 
-    #     highcharter::hc_title(text = glue::glue("Popular topics in 2019"), style = list(fontSize = "21px")) %>% 
-    #     highcharter::hc_tooltip(
-    #       pointFormat = "ID: {point.id} <br/> Prevalence: {point.y} <br/> Topic: {point.topic}",
-    #       headerFormat = "",
-    #       style = list(fontSize = "15px", opacity = 1),
-    #       borderWidth = 2,
-    #       backgroundColor = "#fff",
-    #       hideDelay = 333
-    #     ) %>% 
-    #     highcharter::hc_size(height = height)
-    #   
-    #   hch1
-    # 
-      
-      
     })
     
     output$plot_box4 = echarts4r::renderEcharts4r({
-      req(r$theta_mean_by_year, r$topic, input$dropdown_most_popular2)
+      req(r$n_doc_year, r$topic, input$dropdown_most_popular2)
 
-      d1 = as.data.frame(as.table(r$theta_mean_by_year)) %>%
-        dplyr::mutate(year = as.numeric(as.character(Var1)), id = as.numeric(as.character(Var2)))
+      # d1 = as.data.frame(as.table(r$n_doc_year)) %>%
+      #   dplyr::mutate(year = as.numeric(as.character(Var1)), label = Var2)
       #print(str(d1))
-
+      
+      d1 = r$n_doc_year
+      
       color <- "#241b3e"
 
       top = input$dropdown_most_popular2
-
-      # height = dplyr::case_when(
-      #   top == 5 ~ 400,
-      #   top == 10 ~ 450,
-      #   top == 15 ~ 500,
-      #   top == 20 ~ 550
-      # )
+      
 
 
       df = d1 %>%
         #dplyr::filter(year == 2019) %>%
-        dplyr::arrange(-Freq) %>%
-        dplyr::slice_head(n = top) %>%
-        dplyr::mutate(Freq = round(Freq * 100, 2)) %>%
-        dplyr::left_join(r$topic, by = c("id" = "Nr..")) %>%
+        #dplyr::arrange(-Freq) %>%
+        #dplyr::slice_head(n = top) %>%
+        #dplyr::mutate(Freq = round(Freq * 100, 2)) %>%
+        dplyr::left_join(r$topic, by = c("id" = "ID")) %>%
+        tibble::glimpse(.) %>% 
+        dplyr::arrange(-Freq) %>% 
+        dplyr::slice_head(n = top) %>% 
+        #tibble::glimpse(.) %>% 
         dplyr::mutate(
           id2 = as.factor(glue::glue("{id} ({year})"))
         )
       
-      r$browse_top_3 = unique(df$id)[1:3]
+      print(tail(df))
+      
+      #r$browse_top_3 = unique(df$id)[1:3]
 
-      print(str(df))
+      #print(str(df))
       
       df %>% 
         echarts4r::e_charts(id2, reorder = FALSE) %>% 
-        echarts4r::e_bar(Freq, name = "Prevalence", bind = Thema) %>% 
+        echarts4r::e_bar(Freq, name = "n-docs", bind = TopTerms) %>% 
         echarts4r::e_title(text = "Popular topics overall") %>% 
         echarts4r::e_flip_coords() %>% 
         echarts4r::e_y_axis(inverse = TRUE) %>% 
@@ -300,7 +255,7 @@ mod_start_server <- function(id, r){
           formatter = htmlwidgets::JS("
             function(params){
               return('ID: ' + params.value[1] + 
-                      '<br/> Prevalence: ' + params.value[0]) + 
+                      '<br/> N docs: ' + params.value[0]) + 
                       '<br/> Topic: ' + params.name
                       }
           ")

@@ -32,11 +32,15 @@
   .browse-cards {
     display: grid;
     column-gap: 33px;
-    grid-template-columns: 31% 31% 31%;
+    grid-template-columns: 31.4% 31.33% 31.31%;
   }
   
-  .browse-box4 {
-    width: calc(90.5% + 66px);
+  .tab2-box4 {
+    width: calc(91.5% + 66px);
+  }
+  
+  .tab3-box3 {
+    width: calc(94% + 27px);
   }
 
 }
@@ -70,7 +74,7 @@
     grid-template-columns: 100%;
   }
   
-  .browse-box4 {
+  .tab2-box4 {
     width: 91.66%;
   }
   
@@ -228,6 +232,15 @@ body {
 
 .is-selected .ms-Nav-linkText {
   color: #000;
+}
+
+.rt-search {
+  align-self: flex-start !important;
+  border: 2px solid #aaa !important;
+}
+
+.ReactTable {
+  background-color: #e9ecef !important;
 }
 
 /* .linkText-73 {

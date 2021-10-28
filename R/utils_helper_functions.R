@@ -11,7 +11,10 @@
 router <- shiny.router::make_router(
   route("/", mod_start_ui("start")),
   route("browse-topics", mod_browse_topics_ui("browse")),
-  route("popular", mod_popular_by_year_ui("popular"))
+  route("popular", mod_popular_by_year_ui("popular")),
+  route("hot-cold", mod_hot_cold_ui("hot_cold")),
+  route("topic-evaluation", mod_topic_eval_ui("topic_eval")),
+  route("methods", mod_methods_ui("methods"))
 )
 
 
