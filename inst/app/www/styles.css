@@ -243,6 +243,17 @@ body {
   background-color: #e9ecef !important;
 }
 
+/* hide select all cehckbox reactable */
+
+.hide-checkbox {
+  pointer-events: none;
+}
+
+.hide-checkbox input[type='checkbox'] {
+  display: none;
+}
+
+
 /* .linkText-73 {
   color: #fff;
 } */

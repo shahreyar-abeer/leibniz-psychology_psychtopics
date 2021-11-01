@@ -4,8 +4,7 @@ $(document).ready(function() {
   
   //$("#start-dropdown_most_popular2").hide();
   
-  // hide the all-select button in browse topics tab
-  $("[aria-label = 'Select all rows']").hide();
+
   
   // menu for small screens
   $('#menu').click(function(e) {

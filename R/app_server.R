@@ -33,7 +33,17 @@ app_server <- function( input, output, session ) {
     dplyr::mutate(
       year = as.numeric(as.character(Var1)),
       label = Var2,
-      id = rep(1:199, each = 40)
+      id = rep(1:199, each = 40),
+      Freq = round(Freq, 2)
+    )
+  r$empirical = isolate(readRDS("inst/data/empirical_year.RDS")) %>% 
+    as.table() %>% 
+    as.data.frame() %>% 
+    dplyr::mutate(
+      year = as.numeric(as.character(Var1)),
+      label = Var2,
+      id = rep(1:199, each = 40),
+      Freq = round(Freq, 2)
     )
   r$k <- 325 # set number of topics in the model (all topics, not only the reliable ones)
   

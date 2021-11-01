@@ -158,7 +158,9 @@ mod_start_server <- function(id, r){
       
       d1 = r$n_doc_year
       
-      color <- "#241b3e"
+      color <- "#953386"
+      
+      
 
       top = input$dropdown_most_popular1
 
@@ -183,7 +185,8 @@ mod_start_server <- function(id, r){
         echarts4r::e_bar(Freq, name = "n-docs", bind = TopTerms) %>% 
         echarts4r::e_title(text = glue::glue("Popular topics in {r$latest_year}")) %>% 
         echarts4r::e_flip_coords() %>% 
-        echarts4r::e_y_axis(inverse = TRUE) %>% 
+        echarts4r::e_x_axis(name = "n_docs", nameLocation = "center", nameGap = 27) %>% 
+        echarts4r::e_y_axis(name = "ID", nameLocation = "center", nameRotate = 0, nameGap = 35, inverse = TRUE) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
           formatter = htmlwidgets::JS("
@@ -218,7 +221,7 @@ mod_start_server <- function(id, r){
       
       d1 = r$n_doc_year
       
-      color <- "#241b3e"
+      color <- "#953386"
 
       top = input$dropdown_most_popular2
       
@@ -230,7 +233,7 @@ mod_start_server <- function(id, r){
         #dplyr::slice_head(n = top) %>%
         #dplyr::mutate(Freq = round(Freq * 100, 2)) %>%
         dplyr::left_join(r$topic, by = c("id" = "ID")) %>%
-        tibble::glimpse(.) %>% 
+        #tibble::glimpse(.) %>% 
         dplyr::arrange(-Freq) %>% 
         dplyr::slice_head(n = top) %>% 
         #tibble::glimpse(.) %>% 
@@ -238,7 +241,7 @@ mod_start_server <- function(id, r){
           id2 = as.factor(glue::glue("{id} ({year})"))
         )
       
-      print(tail(df))
+      #print(tail(df))
       
       #r$browse_top_3 = unique(df$id)[1:3]
 
@@ -249,6 +252,7 @@ mod_start_server <- function(id, r){
         echarts4r::e_bar(Freq, name = "n-docs", bind = TopTerms) %>% 
         echarts4r::e_title(text = "Popular topics overall") %>% 
         echarts4r::e_flip_coords() %>% 
+        echarts4r::e_x_axis(name = "n_docs", nameLocation = "center", nameGap = 27) %>% 
         echarts4r::e_y_axis(inverse = TRUE) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,

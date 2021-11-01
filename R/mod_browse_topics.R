@@ -48,7 +48,7 @@ mod_browse_topics_ui <- function(id){
       
       makeCard(
         title = "Share of Empirical Research",
-        content = Text("Here you can browse all topics included in the model."),
+        content = echarts4r::echarts4rOutput(ns("plot_box3")),
         size = 11
       )
     ),
@@ -105,13 +105,17 @@ mod_browse_topics_server <- function(id, r){
 
         #tibble::glimpse(.) %>% 
         dplyr::group_by(id) %>% 
-        dplyr::mutate(tooltip = glue::glue("{TopTerms};{id}")) %>% 
+        dplyr::mutate(
+          tooltip = glue::glue("{TopTerms};{id}"),
+          year = as.character(year)
+        ) %>% 
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(Freq, bind = tooltip) %>% 
-        echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, min = 1980, max = 2019, axisLabel = label1) %>% 
+        echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, axisPointer = list(snap = TRUE)) %>% 
         echarts4r::e_y_axis(name = "n_docs", nameLocation = "center", nameGap = 35) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
+          axisPointer = list(type = "cross"),
           formatter = htmlwidgets::JS("
             function(params){
               var vals = params.name.split(';');
@@ -123,7 +127,43 @@ mod_browse_topics_server <- function(id, r){
           ")
         )
       
-    })
+    })  ## plot_box2
+    
+    
+    output$plot_box3 = echarts4r::renderEcharts4r({
+      req(r$empirical, r$topic, id_selected())
+
+      
+      r$empirical %>%
+        dplyr::left_join(r$topic, by = c("id" = "ID")) %>%
+        dplyr::filter(id %in% id_selected()) %>% 
+        
+        #tibble::glimpse(.) %>% 
+        dplyr::group_by(id) %>% 
+        dplyr::mutate(
+          tooltip = glue::glue("{TopTerms};{id}"),
+          year = as.character(year)
+        ) %>% 
+        echarts4r::e_charts(year) %>% 
+        echarts4r::e_line(Freq, bind = tooltip) %>% 
+        echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, axisPointer = list(snap = TRUE)) %>% 
+        echarts4r::e_y_axis(name = "%", nameLocation = "center", nameGap = 27, nameRotate = 0) %>% 
+        echarts4r::e_tooltip(
+          confine = TRUE,
+          axisPointer = list(type = "cross"),
+          
+          formatter = htmlwidgets::JS("
+            function(params){
+              var vals = params.name.split(';');
+              return('ID: ' + vals[1] + 
+                      '<br/> Empirical research: ' + params.value[1]) + '%' +
+                      '<br/> Year: ' + params.value[0] + 
+                      '<br/> Topic: ' + vals[0]
+                      }
+          ")
+        )
+    })  ## plot_box3
+    
     
     output$topics_table = reactable::renderReactable({
       topic() %>% 
@@ -146,11 +186,15 @@ mod_browse_topics_server <- function(id, r){
               name = "Search",
               html = TRUE
             ),
+            Empirical = reactable::colDef(
+              format = reactable::colFormat(digits = 2)
+            ),
             # freq = reactable::colDef(
             #   name = "Prevalence"
             # ),
             .selection = reactable::colDef(
-              show = TRUE
+              show = TRUE,
+              headerClass = "hide-checkbox"
             )
           )
           

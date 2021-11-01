@@ -41,7 +41,7 @@ mod_popular_by_year_ui <- function(id){
                 # ),
                 
                 label = "Select year",
-                options = lapply(1980:2019, function(x) list(key = x, text = glue::glue("{x}"))),
+                options = lapply(sort(1980:2019, decreasing = TRUE), function(x) list(key = x, text = glue::glue("{x}"))),
                 value = 2019
               )
             )
@@ -116,6 +116,9 @@ mod_popular_by_year_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    ## reactiveValues for this mod
+    r_mod_pby = reactiveValues()
+    
     output$box1_text = renderUI({
       req(r$current_year)
       print(class(input$selected_year))
@@ -134,53 +137,35 @@ mod_popular_by_year_server <- function(id, r){
     output$plot_box2 = echarts4r::renderEcharts4r({
       req(r$n_doc_year, r$topic, input$dropdown_most_popular)
       
-      # d1 = as.data.frame(as.table(r$n_doc_year)) %>%
-      #   dplyr::mutate(year = as.numeric(as.character(Var1)), label = Var2)
-      # print(str(d1))
-      
-      d1 = r$n_doc_year
-      
-      color <- "#241b3e"
-      
+      color <- "#953386"
       top = input$dropdown_most_popular
       
-      
-      # df = d1 %>%
-      #   
-      #   #dplyr::arrange(-Freq) %>%
-      #   #dplyr::slice_head(n = top) %>%
-      #   #dplyr::mutate(Freq = round(Freq * 100, 2)) %>%
-      #   dplyr::left_join(r$topic, by = c("label" = "Label")) %>% 
-      #   dplyr::filter(year == r$current_year) %>%
-      #   dplyr::arrange(-Freq) %>% 
-      #   dplyr::slice_head(n = top) %>% 
-      #   dplyr::mutate(
-      #     id2 = as.factor(ID)
-      #   )
-      
-      
-      df = d1 %>%
+      df = r$n_doc_year %>%
         dplyr::filter(year == input$selected_year) %>%
-        dplyr::left_join(r$topic, by = c("id" = "ID")) %>% 
         dplyr::arrange(-Freq) %>%
         #tibble::glimpse(.) %>% 
         dplyr::slice_head(n = top) %>%
+        dplyr::left_join(r$topic, by = c("id" = "ID")) %>% 
         #dplyr::mutate(Freq = round(Freq * 100, 2)) %>%
         #dplyr::left_join(r$topic, by = c("id" = "Nr..")) %>% 
         dplyr::mutate(
           id2 = as.factor(id),
-          top_terms_year = glue::glue("{TopTerms}; {input$selected_year}")
+          tooltip = glue::glue("{TopTerms}; {input$selected_year}")
         )
       
+      r_mod_pby$df = df
       
-      #print(str(df))
       
-      df %>% 
+      print(str(df))
+      
+      df %>%
+        #dplyr::mutate(colors = c(color, rep("red", 4))) %>% 
         echarts4r::e_charts(id2) %>% 
-        echarts4r::e_bar(Freq, name = "N docs", bind = top_terms_year) %>% 
+        echarts4r::e_bar(Freq, name = "N docs", bind = tooltip, selectedMode = TRUE, select = list(itemStyle = list(color = "#241b3e"))) %>% 
         echarts4r::e_title(text = glue::glue("Popular topics in {input$selected_year}")) %>% 
         echarts4r::e_flip_coords() %>% 
-        echarts4r::e_y_axis(inverse = TRUE) %>% 
+        echarts4r::e_x_axis(name = "n_docs", nameLocation = "center", nameGap = 27) %>% 
+        echarts4r::e_y_axis(name = "ID", nameLocation = "center", nameRotate = 0, nameGap = 35, inverse = TRUE) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
           formatter = htmlwidgets::JS("
@@ -203,9 +188,73 @@ mod_popular_by_year_server <- function(id, r){
               }
           ")
         ) %>% 
-        echarts4r::e_color(color = color)
+        echarts4r::e_color(color = color) %>% 
+        echarts4r::e_show_loading()
+        #echarts4r::e_highlight(series_index = 0, dataIndex = 2)
+        #echarts4r::e_add("itemStyle", colors)
+        #echarts4r::e_add("dataIndex", 1:5)
       
-    })
+    })  ## end plot_box2
+    
+    observeEvent(selected(), {
+      proxy = echarts4r::echarts4rProxy(ns("plot_box2"))
+      
+      if (is.null(selected())) {
+        proxy %>% 
+          echarts4r::e_dispatch_action_p("select", dataIndex = NULL)
+      } else {
+        proxy %>% 
+          echarts4r::e_dispatch_action_p("select", dataIndex = (selected() - 1))
+      }
+
+    }, ignoreNULL = FALSE)
+    
+    # observeEvent(input$plot_box2_clicked_data, {
+    #   print(input$plot_box2_clicked_data)
+    # })
+    
+    output$topics_table = reactable::renderReactable({
+      req(r_mod_pby$df)
+      
+      r_mod_pby$df %>% 
+        dplyr::select(ID = id2, Label, year, TopTerms, n_docs = Freq, Empirical, Journals) %>% 
+        reactable::reactable(
+          rownames = FALSE,
+          searchable = TRUE,
+          sortable = FALSE,
+          resizable = TRUE,
+          selection = "single",
+          defaultSelected = 1,
+          onClick = "select",
+          theme = reactable::reactableTheme(
+            rowSelectedStyle = list(backgroundColor = "#c6cf78ff", boxShadow = "inset 2px 0 0 0 #ffa62d")
+          ),
+          columns = list(
+            # id = reactable::colDef(
+            #   name = "ID"
+            # ),
+            # search = reactable::colDef(
+            #   name = "Search",
+            #   html = TRUE
+            # ),
+            # freq = reactable::colDef(
+            #   name = "Prevalence"
+            # ),
+            Empirical = reactable::colDef(
+              format = reactable::colFormat(digits = 2)
+            ),
+            .selection = reactable::colDef(
+              show = TRUE,
+              headerClass = "hide-checkbox"
+            )
+          )
+          
+        )
+    })  ## end topics_table
+    
+    selected <- reactive(reactable::getReactableState("topics_table", "selected"))
+    
+    
     
   })
 }
