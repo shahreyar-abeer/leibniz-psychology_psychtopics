@@ -36,6 +36,7 @@ golem_add_external_resources <- function(){
       path = app_sys('app/www'),
       app_title = 'psychtopics'
     ),
+    tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
     tags$script(type = "text/javascript", src = file.path("shiny.router", "shiny.router.js"))
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert() 

@@ -1,8 +1,197 @@
 
 
 
+body {
+  background-color: rgba(225, 223, 221, 0.2);
+  min-height: 611px;
+  margin: 0;
+}
 
-@media (min-width: 1250px) {
+a {
+  color: #953386;
+}
+
+.header {
+  grid-area: header;
+  background-color: #fff;
+  padding: 6px 0px 11px 10px;
+}
+
+.title2 {
+  grid-area: title2;
+  background-color: #a2b21e;
+}
+
+.menu {
+  margin-top: 11px;
+}
+
+.ms-Icon {
+    font-weight: 600;
+    font-size: 17px;
+    color: grey;
+}
+
+.main {
+  grid-area: main;
+  background-color: #faf9f8;
+  padding-left: 0rem;
+  padding-right: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.buttons-tab2 {
+  background: #241b3e;
+  border: 1px solid #241b3e;
+}
+
+.buttons-tab2:hover {
+  background: #953386;
+  border: 1px solid #953386;
+}
+
+.icon-tab2 {
+  color: #f3f2f1;
+  font-weight: 500;
+  font-size: 21px;
+}
+
+
+@media only screen and (min-width: 320px) {
+  .grid-container {
+    display: grid;
+    grid-template-columns: min-content 90%;
+    grid-template-rows: 54px 77px 1fr;
+    grid-template-areas: "menu header" "sidenav title2" "sidenav main";
+    height: 100vh;
+  }
+  
+  
+  .sidenav {
+    position: absolute;
+    grid-area: sidenav;
+    background-color: #241b3e;
+    width: 0;
+    padding-top: 2rem;
+    padding-right: 0;
+    transition: width .5s ease-out;
+    z-index: 2;
+    top: 54px;
+  }
+  
+  .sidenav-opened {
+    position: absolute;
+    grid-area: sidenav;
+    width: 250px;
+    padding-top: 2rem;
+    padding-right: 0;
+    transition: width .5s ease-in;
+    z-index: 2;
+    top: 54px;
+  }
+  
+  .main{
+    margin-left: -1rem;
+  }
+  .main-opened {
+    z-index: 1;
+    opacity: .5;
+    transition: opacity .5s;
+  }
+  
+  .title2-opened {
+    opacity: .5;
+    transition: opacity .5s;
+  }
+  
+  .title2 {
+    margin-left: -2rem;
+  }
+  
+  .menu {
+    display: block;
+    grid-area: menu;
+  }
+  
+  
+  .start-cards {
+    display: grid;
+    grid-template-columns: 100%;
+    row-gap: 21px;
+  }
+  
+  
+}
+
+@media only screen and (min-width: 768px) {
+  .grid-container {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    grid-template-rows: 54px 77px 1fr;
+    grid-template-areas: "sidenav header" "sidenav title2" "sidenav main";
+    height: 100vh;
+  }
+  
+  .sidenav {
+    position: static;
+    grid-area: sidenav;
+    width: 100%;
+    background-color: #241b3e;
+    padding-right: 0;
+    padding-top: 2rem;
+  }
+  
+  .title2 {
+    margin-left: 0;
+  }
+  
+  .main {
+    padding-left: 2rem;
+    margin-left: 0;
+  }
+  
+  
+  .menu {
+    grid-area: menu;
+    display: none;
+  }
+  
+}
+
+
+@media only screen and (min-width: 992px) {
+  .grid-container {
+    display: grid;
+    grid-template-columns: 20% 80%;
+    grid-template-rows: 54px 77px 1fr;
+    grid-template-areas: "sidenav header" "sidenav title2" "sidenav main";
+    height: 100vh;
+  }
+  
+  
+  .start-cards {
+    display: grid;
+    column-gap: 39px;
+    row-gap: 33px;
+    grid-template-columns: 47% 47%;
+  }
+  
+  .browse-cards {
+    display: grid;
+    row-gap: 33px;
+    grid-template-columns: 100%;
+  }
+  
+  .tab2-box4 {
+    width: 91.66%;
+  }
+  
+
+}
+
+
+@media only screen and (min-width: 1200px) {
   .grid-container {
     display: grid;
     grid-template-columns: 15% 85%;
@@ -11,11 +200,6 @@
     height: 100vh;
   }
   
-  .sidenav {
-    grid-area: sidenav;
-    background-color: #241b3e;
-    padding: 1rem;
-  }
   
   .menu {
     grid-area: menu;
@@ -46,152 +230,11 @@
 }
 
 
-@media (max-width: 1250px) {
-  .grid-container {
-    display: grid;
-    grid-template-columns: 20% 80%;
-    grid-template-rows: 54px 77px 1fr;
-    grid-template-areas: "sidenav header" "sidenav title2" "sidenav main";
-    height: 100vh;
-  }
-  
-  .sidenav {
-    grid-area: sidenav;
-    background-color: #241b3e;
-    padding: 1rem;
-  }
-  
-  .start-cards {
-    display: grid;
-    column-gap: 39px;
-    row-gap: 33px;
-    grid-template-columns: 47% 47%;
-  }
-  
-  .browse-cards {
-    display: grid;
-    row-gap: 33px;
-    grid-template-columns: 100%;
-  }
-  
-  .tab2-box4 {
-    width: 91.66%;
-  }
-  
-  .menu {
-    grid-area: menu;
-    display: none;
-  }
-}
-
-@media (max-width: 1050px) {
-  .grid-container {
-    display: grid;
-    grid-template-columns: 25% 75%;
-    grid-template-rows: 54px 77px 1fr;
-    grid-template-areas: "sidenav header" "sidenav title2" "sidenav main";
-    height: 100vh;
-  }
-  
-  .sidenav {
-    grid-area: sidenav;
-    background-color: #241b3e;
-    padding: 1rem;
-  }
-  
-  .start-cards {
-    display: grid;
-    grid-template-columns: 100%;
-    row-gap: 21px;
-  }
-  
-  
-  
-}
 
 
 
 
-@media screen and (max-width: 768px) {
-  .grid-container {
-    display: grid;
-    grid-template-columns: min-content 1fr;
-    grid-template-rows: 54px 77px 1fr;
-    grid-template-areas: "menu header" "sidenav title2" "sidenav main";
-    height: 100vh;
-  }
-  
-  .sidenav {
-    grid-area: sidenav;
-    width: 0;
-    padding: 0;
-    transition: width .5s ease-in;
-  }
-  
-  .sidenav-opened {
-    grid-area: sidenav;
-    width: 250px;
-    padding: 1rem;
-  }
-  
-  .main-opened {
-    opacity: .5;
-    transition: opacity .7s;
-  }
-  
-  .title2-opened {
-    opacity: .5;
-    transition: opacity .7s;
-    margin-left: 0 !important;
-  }
-  
-  .title2 {
-    margin-left: -2rem;
-  }
-  
-  .menu {
-    display: block;
-    grid-area: menu;
-  }
-  
-  .main {
-    padding-left: 0 !important;
-  }
-  
-  
-}
 
-
-.header {
-  grid-area: header;
-  background-color: #fff;
-  padding: 6px 0px 11px 10px;
-}
-
-.title2 {
-  grid-area: title2;
-  background-color: #a2b21e;
-}
-
-.menu {
-  margin-top: 11px;
-}
-
-.ms-Icon {
-    font-weight: 600;
-    font-size: 17px;
-    color: grey;
-}
-
-.main {
-  grid-area: main;
-  background-color: #faf9f8;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  overflow: auto;
-}
 
 /* .footer {
   grid-area: footer;
@@ -209,11 +252,7 @@
 
 
 
-body {
-  background-color: rgba(225, 223, 221, 0.2);
-  min-height: 611px;
-  margin: 0;
-}
+
 
 .page-title {
   padding: 52px 0px;

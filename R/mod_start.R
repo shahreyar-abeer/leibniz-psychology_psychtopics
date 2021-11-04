@@ -18,21 +18,92 @@ mod_start_ui <- function(id){
         style = "background-color: #c6cf78ff",
         content = tagList(
           bodyText(tagList("With PsychTopics, you can explore current and past research trends in psychology from the ",  tags$b("German-speaking countries."))),
+          bodyText(
+            tagList(
+              "Topics are identified in ", tags$a("PSYNDEX", href = "http://www.psyndex.de", target = "_blank"),
+              ", the comprehensive database produced by the Leibniz Institute for Psychology (ZPID)."
+            )
+          ),
+          
+          # bodyText(tagList("Conclusions should be drawn carefully, as topics are derived from the ",
+          #                  tags$a("PSYNDEX database", href = "http://www.psyndex.de", target = "_blank"),
+          #                  tags$b(" automatically using machine learning algorithms."), 
+          #                  " PsychTopics is in an experimental state, makes no claim to completeness and cannot replace specific search strategies.")),
           br(),
+          bodyText(uiOutput(ns("last_update"))),
+          
           br(),
-          bodyText(tagList("Conclusions should be drawn carefully, as topics are derived from the ",
-                           tags$a("PSYNDEX database", href = "http://www.psyndex.de", target = "_blank"),
-                           tags$b(" automatically using machine learning algorithms."), 
-                           " PsychTopics is in an experimental state, makes no claim to completeness and cannot replace specific search strategies.")),
-          br(),
-          br(),
-          bodyText(uiOutput(ns("last_update")))
+          bodyText(
+            tagList(
+              "How to cite: ",
+              tags$a("Bittermann (2019)", href = "https://www.google.com", target = "_blank")
+            )
+          ),
+          
+          bodyText(
+            tagList(
+              "Shiny App coded by: ",
+              tags$a("Zauad Shahreer Abeer", href = "https://www.google.com", target = "_blank")
+            )
+          ),
+          bodyText(
+            tagList(
+              "PsychTopics is open-source software ",
+              tags$a("(explore the code)", href = "https://www.google.com", target = "_blank")
+            )
+          )
+          
         )
       ),
       makeCard(
         size = 11,
-        title = NULL,
+        title = "How To Use PsychTopics",
+        style = "background-color: #c6cf78ff",
         content = tagList(
+          bodyText(
+            "Use the menu on the left for different topic views.
+            Look out for information icons in the top right corner of the boxes"
+          ),
+          br(),
+          
+          bodyText(
+            tagList(
+              tags$b("Conclusions should be drawn carefully, "),
+              "as topics are derived automatically using machine learning algorithms.
+              PsychTopics makes no claim to completeness and cannot replace specific search strategies."
+            )
+          ),
+          br(),
+          bodyText("For more information, click “Methods” on the left.")
+          
+          
+          # shiny.fluent::Stack(
+          #   horizontal = TRUE,
+          #   div(class = "ms-Grid-col ms-sm2 ms-xl2"),
+          #   div(
+          #     class = "ms-Grid-col ms-sm4 ms-xl4",
+          #     shiny.fluent::PrimaryButton.shinyInput(
+          #       inputId = ns("begin_tutorial"),
+          #       text = "Begin Tutorial",
+          #       className = "buttons-tab2",
+          #       iconProps = list("iconName" = "Education", className = "icon-tab2")
+          #       #onRenderIcon = shiny.fluent::JS("() => {return <i className='fas fa-plus'></i>}")
+          #     ),
+          #   ),
+          #   div(
+          #     class = "ms-Grid-col ms-sm4 ms-xl4",
+          #     shiny.fluent::PrimaryButton.shinyInput(
+          #       inputId = ns("github"),
+          #       text = "Github",
+          #       className = "buttons-tab2",
+          #       iconProps = list("iconName" = "Link", className = "icon-tab2")
+          #       #onRenderIcon = shiny.fluent::JS("() => {return <i className='fas fa-plus'></i>}")
+          #     ),
+          #   )
+          # ),
+          
+
+
           # tags$iframe(width = "100%", height = "400px", src = "https://zpid.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=b4408d9e-68ee-4a17-933b-ac1a0094197d",
           #             frameborder = "0", allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture", allowfullscreen = TRUE)
         )
@@ -117,6 +188,8 @@ mod_start_ui <- function(id){
 }
     
 #' start Server Functions
+#' 
+#' @import echarts4r
 #'
 #' @noRd 
 mod_start_server <- function(id, r){

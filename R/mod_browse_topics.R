@@ -115,6 +115,8 @@ mod_browse_topics_server <- function(id, r){
         echarts4r::e_y_axis(name = "n_docs", nameLocation = "center", nameGap = 35) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
+          appendToBody = TRUE,
+          textStyle = list(width = 50, overflow = "break"),
           axisPointer = list(type = "cross"),
           formatter = htmlwidgets::JS("
             function(params){
@@ -169,12 +171,17 @@ mod_browse_topics_server <- function(id, r){
       topic() %>% 
         reactable::reactable(
           rownames = FALSE,
+          compact = TRUE,
           searchable = TRUE,
           sortable = FALSE,
           resizable = TRUE,
+          fullWidth = FALSE,
           selection = "multiple",
           defaultSelected = 1:3,
           onClick = "select",
+          style = list(
+            width = "100%"
+          ),
           theme = reactable::reactableTheme(
             rowSelectedStyle = list(backgroundColor = "#c6cf78ff", boxShadow = "inset 2px 0 0 0 #ffa62d")
           ),

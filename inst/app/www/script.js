@@ -4,7 +4,17 @@ $(document).ready(function() {
   
   //$("#start-dropdown_most_popular2").hide();
   
-
+  jsmodule['@fluentui/react'].registerIcons({
+    icons: {
+      //'Cap': <Icon icon={'link'} />,
+      Cap: React.createElement('Icon', {icon: "link"}),
+      'Ups': '\uE417'
+      //Filters: <FontAwesomeIcon icon={faFilter} />
+      //'HomeSolid': <Icon icon={['fas', 'home']} />,
+    }
+  });
+  
+  //console.log(React.createElement('Icon', {icon: 'fa-link'}));
   
   // menu for small screens
   $('#menu').click(function(e) {
