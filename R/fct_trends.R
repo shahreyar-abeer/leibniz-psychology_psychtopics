@@ -43,7 +43,7 @@ trends.ab <- function(von, bis,
   terms_cold <- topic[topics_cold[1:10],-3]
   terms_cold$rank <- 1:10
   terms_cold[ ,c(1,2,3)] <- terms_cold[ ,c(3,1,2)]
-  names(terms_cold) <- c("Rang", "NR", "Thema")
+  names(terms_cold) <- c("Rang", "NR", "Thema", "Freq", "Journal", "Rank")
   
   # results
   results <- list()

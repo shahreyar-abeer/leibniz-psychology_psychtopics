@@ -11,9 +11,9 @@ mod_start_ui <- function(id){
   ns <- NS(id)
   tagList(
     div(
-      class = "start-cards",
+      class = "two-cards",
       makeCard(
-        size = 11,
+        size = 12,
         title = "About PsychTopics",
         style = "background-color: #c6cf78ff",
         content = tagList(
@@ -36,14 +36,36 @@ mod_start_ui <- function(id){
           bodyText(
             tagList(
               "How to cite: ",
-              tags$a("Bittermann (2019)", href = "https://www.google.com", target = "_blank")
+              shiny.fluent::TooltipHost(
+                content = tagList(
+                  shiny.fluent::Text("Bittermann, A. (2019). Development of a user-friendly app for exploring and analyzing research topics in psychology.",
+                                     br(),
+                                     "In G. Catalano, C. Daraio, M. Gregori, H. F. Moed & G. Ruocco (Eds.), Proceedings of the 17th Conference of the International Society for Scientometrics and Informetrics (2634–2635).",
+                                     br(),
+                                     "Rome: Edizioni Efesto."),
+                  br(),
+                  tags$a("http://dx.doi.org/10.23668/psycharchives.2521", href = "http://dx.doi.org/10.23668/psycharchives.2521", target = "_blank")
+                ),
+                delay = 0,
+                tags$a("Bittermann (2019)")
+
+              )
             )
           ),
           
           bodyText(
             tagList(
               "Shiny App coded by: ",
-              tags$a("Zauad Shahreer Abeer", href = "https://www.google.com", target = "_blank")
+              shiny.fluent::TooltipHost(
+                content = tagList(
+                  shiny.fluent::Text("R Shiny Developer"),
+                  br(),
+                  tags$a("the way we R", href = "http://dx.doi.org/10.23668/psycharchives.2521", target = "_blank")
+                ),
+                delay = 0,
+                tags$a("Zauad Shahreer Abeer")
+                
+              )
             )
           ),
           bodyText(
@@ -55,8 +77,11 @@ mod_start_ui <- function(id){
           
         )
       ),
+      div(
+        
+      ),
       makeCard(
-        size = 11,
+        size = 12,
         title = "How To Use PsychTopics",
         style = "background-color: #c6cf78ff",
         content = tagList(
@@ -107,10 +132,16 @@ mod_start_ui <- function(id){
           # tags$iframe(width = "100%", height = "400px", src = "https://zpid.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=b4408d9e-68ee-4a17-933b-ac1a0094197d",
           #             frameborder = "0", allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture", allowfullscreen = TRUE)
         )
-      ),
-      
+      )
+    ),
+    
+    #br(),
+    
+    div(
+      class = "two-cards",
+      style = "margin-bottom: 0",
       makeCard(
-        size = 11,
+        size = 12,
         title = uiOutput(ns("title_box3")),
         content = tagList(
           
@@ -143,14 +174,16 @@ mod_start_ui <- function(id){
           echarts4r::echarts4rOutput(ns("plot_box3"), height = 550)
           #highcharter::highchartOutput(ns("plot_box3"), height = 650)
         )
-#          br(),
+      ),
+      
+      div(
+        
       ),
       
       makeCard(
-        size = 11,
+        size = 12,
         title = "Overall Most Popular Topics in PSYNDEX",
         content = tagList(
-          
           
           div(
             class = "grid-p1-b3-b4",

@@ -45,3 +45,4 @@ createLink <- function(val, boost, topicnum) {
   paste0("<a href='https://pubpsych.zpid.de/pubpsych/Search.action?q=%28CT%3D%28", 
          val,"%29%29+DB%3DPSYNDEX&stats=TOP' target='_blank' class='btn btn-primary'>Search PSYNDEX</a>")
 }
+

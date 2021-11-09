@@ -12,12 +12,12 @@ mod_browse_topics_ui <- function(id){
   tagList(
     
     div(
-      class = "browse-cards",
+      class = "three-cards",
 
       makeCard(
         title = "Browse PSYNDEX Topics",
         style = "background-color: #c6cf78ff",
-        size = 11,
+        size = 12,
         content = tagList(
           
           bodyText("Here you can browse all topics included in the model."),
@@ -28,9 +28,11 @@ mod_browse_topics_ui <- function(id){
         )
       ),
       
+      div(),
+      
       makeCard(
         title = "Topic Trends",
-        size = 11,
+        size = 12,
         content = tagList(
           echarts4r::echarts4rOutput(ns("plot_box2")),
           
@@ -46,15 +48,31 @@ mod_browse_topics_ui <- function(id){
         )
       ),
       
+      div(),
+      
       makeCard(
         title = "Share of Empirical Research",
-        content = echarts4r::echarts4rOutput(ns("plot_box3")),
-        size = 11
+        size = 12,
+        content = tagList(
+          
+          echarts4r::echarts4rOutput(ns("plot_box3")),
+          shiny.fluent::Stack(
+            horizontal = TRUE,
+            div(class = "ms-Grid-col ms-sm4 ms-xl4"),
+            div(
+              class = "ms-Grid-col ms-sm4 ms-xl4",
+              shiny.fluent::DefaultButton.shinyInput(inputId = ns("clear_plot2"), text = "Clear Plot")
+            )
+          )
+        )
+          
+         
       )
     ),
-    br(),
+    
     div(
-      class = "tab2-box4",
+      class = "one-card",
+      style = "margin-bottom: 0",
       makeCard(
         title = "Topic Details",
         size = 12,
@@ -87,6 +105,11 @@ mod_browse_topics_server <- function(id, r){
     observeEvent(input$clear_plot, {
       reactable::updateReactable("topics_table", selected = NA)
     })
+    
+    observeEvent(input$clear_plot2, {
+      reactable::updateReactable("topics_table", selected = NA)
+    })
+    
     
     output$plot_box2 = echarts4r::renderEcharts4r({
       req(r$n_doc_year, r$topic, id_selected())
@@ -176,6 +199,7 @@ mod_browse_topics_server <- function(id, r){
           sortable = FALSE,
           resizable = TRUE,
           fullWidth = FALSE,
+          defaultPageSize = 5,
           selection = "multiple",
           defaultSelected = 1:3,
           onClick = "select",

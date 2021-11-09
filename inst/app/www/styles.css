@@ -1,6 +1,14 @@
 
 
 
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 body {
   background-color: rgba(225, 223, 221, 0.2);
   min-height: 611px;
@@ -26,11 +34,6 @@ a {
   margin-top: 11px;
 }
 
-.ms-Icon {
-    font-weight: 600;
-    font-size: 17px;
-    color: grey;
-}
 
 .main {
   grid-area: main;
@@ -44,11 +47,13 @@ a {
 .buttons-tab2 {
   background: #241b3e;
   border: 1px solid #241b3e;
+  transition: background .5s ease;
 }
 
 .buttons-tab2:hover {
   background: #953386;
   border: 1px solid #953386;
+  transition: background .3s ease;
 }
 
 .icon-tab2 {
@@ -57,11 +62,42 @@ a {
   font-size: 21px;
 }
 
+.ms-Slider-inactive {
+  background: #241b3e;
+}
+
+.ms-Slider-slideBox:hover .ms-Slider-inactive {
+  background: #953386;
+}
+
+.ms-Slider-active {
+  background: #953386;
+}
+
+.ms-Slider-slideBox:hover .ms-Slider-active{
+  background: #953386;
+}
+
+.ms-Slider-slideBox:hover .ms-Slider-thumb {
+  border: 2px solid #953386;
+}
+
+.ms-Icon {
+  font-weight: 600;
+  color: #f3f2f1;
+}
+
+.is-disabled {
+  background: #a19f9d;
+  border: 1px solid #a19f9d;
+  transition: background .5s ease;
+}
+
 
 @media only screen and (min-width: 320px) {
   .grid-container {
     display: grid;
-    grid-template-columns: min-content 90%;
+    grid-template-columns: 5% 95%;
     grid-template-rows: 54px 77px 1fr;
     grid-template-areas: "menu header" "sidenav title2" "sidenav main";
     height: 100vh;
@@ -91,9 +127,6 @@ a {
     top: 54px;
   }
   
-  .main{
-    margin-left: -1rem;
-  }
   .main-opened {
     z-index: 1;
     opacity: .5;
@@ -114,14 +147,40 @@ a {
     grid-area: menu;
   }
   
-  
-  .start-cards {
+  .one-card {
     display: grid;
     grid-template-columns: 100%;
-    row-gap: 21px;
+    margin-bottom: 20px;
+  }
+  
+  .two-cards {
+    display: grid;
+    grid-template-columns: 100%;
+    row-gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .three-cards {
+    display: grid;
+    grid-template-columns: 100%;
+    row-gap: 10px;
+    margin-bottom: 20px;
   }
   
   
+}
+
+@media only screen and (min-width: 480px) {
+  
+  .two-cards {
+    display: grid;
+    grid-template-columns: 100%;
+  }
+  
+  .three-cards {
+    display: grid;
+    grid-template-columns: 100%;
+  }
 }
 
 @media only screen and (min-width: 768px) {
@@ -169,13 +228,23 @@ a {
     height: 100vh;
   }
   
-  
-  .start-cards {
-    display: grid;
-    column-gap: 39px;
-    row-gap: 33px;
-    grid-template-columns: 47% 47%;
+  .one-card {
+    margin-bottom: 2%;
   }
+  
+  .two-cards {
+    display: grid;
+    grid-template-columns: 47.5% 5% 47.5%;
+    margin-bottom: 2%;
+  }
+  
+  .three-cards {
+    display: grid;
+    grid-template-columns: 100%;
+    margin-bottom: 2%;
+  }
+  
+
   
   .browse-cards {
     display: grid;
@@ -206,6 +275,23 @@ a {
     display: none;
   }
   
+  .one-card {
+    margin-bottom: 1.7%;
+  }
+  
+  .two-cards {
+    display: grid;
+    grid-template-columns: 48.5% 3% 48.5%;
+    margin-bottom: 1.7%;
+  }
+  
+  .three-cards {
+    display: grid;
+    grid-template-columns: 32% 2% 32% 2% 32%;
+    margin-bottom: 1.7%;
+  }
+
+  
   .start-cards {
     display: grid;
     column-gap: 27px;
@@ -227,6 +313,21 @@ a {
     width: calc(94% + 27px);
   }
 
+}
+
+@media only screen and (min-width: 1450px) {
+  .two-cards {
+    display: grid;
+    grid-template-columns: 49.2% 1.6% 49.2%;
+    margin-bottom: 1.7%;
+  }
+  
+  .three-cards {
+    display: grid;
+    grid-template-columns: 32.3% 1.55% 32.3% 1.55% 32.3%;
+    margin-bottom: 1.7%;
+  }
+  
 }
 
 

@@ -12,10 +12,11 @@ mod_popular_by_year_ui <- function(id){
   tagList(
     
     div(
-      class = "start-cards",
+      class = "two-cards",
       
       makeCard(
         title = "Popular PSYNDEX Topics by Year",
+        size = 12,
         style = "background-color: #c6cf78ff",
         content = tagList(
           
@@ -52,15 +53,15 @@ mod_popular_by_year_ui <- function(id){
           uiOutput(ns("box1_text")),
           br(),
           uiOutput(ns("last_updated"))
-        ),
+        )
         
-        
-        
-        size = 11
       ),
+      
+      div(),
+      
       makeCard(
         title = "Topic Trends",
-        size = 11,
+        size = 12,
         content = tagList(
           
           div(
@@ -92,9 +93,10 @@ mod_popular_by_year_ui <- function(id){
         )
       )
     ),
-    br(),
+    
     div(
-      class = "tab3-box3",
+      class = "one-card",
+      style = "margin-bottom: 0",
       makeCard(
         title = "Topic Details",
         size = 12,
@@ -225,6 +227,7 @@ mod_popular_by_year_server <- function(id, r){
           resizable = TRUE,
           selection = "single",
           defaultSelected = 1,
+          defaultPageSize = 5,
           onClick = "select",
           theme = reactable::reactableTheme(
             rowSelectedStyle = list(backgroundColor = "#c6cf78ff", boxShadow = "inset 2px 0 0 0 #ffa62d")
