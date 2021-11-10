@@ -93,6 +93,15 @@ a {
   transition: background .5s ease;
 }
 
+.ms-BasePicker-text {
+  background: white;
+  min-height: 33px;
+}
+
+.ms-Label {
+  font-size: 17px;
+  text-align: center;
+}
 
 @media only screen and (min-width: 320px) {
   .grid-container {

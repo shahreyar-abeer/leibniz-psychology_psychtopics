@@ -22,6 +22,7 @@ mod_popular_by_year_ui <- function(id){
           
           bodyText("Explore the most popular topics in a specific year."),
           br(),
+          br(),
           shiny.fluent::Stack(
             horizontal = TRUE,
             div(
@@ -33,7 +34,7 @@ mod_popular_by_year_ui <- function(id){
               shiny.fluent::Dropdown.shinyInput(
                 inputId = ns("selected_year"),
                 style = list(textAlign = "center", width = "100%"),
-                calloutProps = list(directionalHintFixed = TRUE, calloutMaxHeight = 300),
+                calloutProps = list(directionalHintFixed = TRUE, calloutMaxHeight = 350),
                 #dropdown = list(width = "40%"),
                 # styles = list(
                 #   dropdown = list(width = "50%"),
@@ -49,6 +50,7 @@ mod_popular_by_year_ui <- function(id){
             
           ),
           
+          br(),
           br(),
           uiOutput(ns("box1_text")),
           br(),

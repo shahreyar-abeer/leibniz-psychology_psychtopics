@@ -45,6 +45,7 @@ app_server <- function( input, output, session ) {
       id = rep(1:199, each = 40),
       Freq = round(Freq, 2)
     )
+  r$topic_evo = readRDS("./inst/data/topic_evo.RDS")
   r$k <- 325 # set number of topics in the model (all topics, not only the reliable ones)
   
   

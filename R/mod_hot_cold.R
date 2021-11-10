@@ -22,6 +22,7 @@ mod_hot_cold_ui <- function(id){
           bodyText("Hot topics show the highest increase in topic prevalence over the years,
                    while cold topics are characterized by a decrease."),
           br(),
+          br(),
           #bodyText("You can set the range of years here"),
           
           shiny.fluent::Stack(
@@ -54,7 +55,7 @@ mod_hot_cold_ui <- function(id){
           ),
           
           
-          
+          br(),
           br(),
           bodyText("For Trends, only records from 1980 to [current_year - 1] are included, since publications of the current year are not yet fully covered.")
         ),
@@ -325,7 +326,7 @@ mod_hot_cold_server <- function(id, r){
       trends()[[1]] %>%
         dplyr::select(ID = NR) %>% 
         dplyr::left_join(r$topic, by = "ID") %>% 
-        dplyr::select(ID, TopTerms) %>% 
+        dplyr::select(ID, TopTerms, Label) %>% 
         dplyr::mutate(
           search = createLink(TopTerms, r$booster, ID)
         ) %>% 
@@ -354,6 +355,9 @@ mod_hot_cold_server <- function(id, r){
             .selection = reactable::colDef(
               show = TRUE,
               headerClass = "hide-checkbox"
+            ),
+            TopTerms = reactable::colDef(
+              show = FALSE
             )
           )
           
@@ -367,7 +371,7 @@ mod_hot_cold_server <- function(id, r){
       trends()[[2]] %>%
         dplyr::select(ID = NR) %>% 
         dplyr::left_join(r$topic, by = "ID") %>% 
-        dplyr::select(ID, TopTerms) %>% 
+        dplyr::select(ID, TopTerms, Label) %>% 
         dplyr::mutate(
           search = createLink(TopTerms, r$booster, ID)
         ) %>% 
@@ -396,6 +400,9 @@ mod_hot_cold_server <- function(id, r){
             .selection = reactable::colDef(
               show = TRUE,
               headerClass = "hide-checkbox"
+            ),
+            TopTerms = reactable::colDef(
+              show = FALSE
             )
           )
           
