@@ -46,11 +46,11 @@ header <- tagList(
       #   CommandBarItem("Calendar event", "Calendar", key = "calendarEvent")
       # )),
       
-      CommandBarItem(text = tags$img(src = "www/logo.png", height = "49px", width = "210px", class = "logo"), href = "https://www.leibniz-psychology.org/", target = "_blank")
+      CommandBarItem(text = tags$img(src = "www/logo.png", class = "logo"), href = "https://www.leibniz-psychology.org/", target = "_blank")
     ),
     farItems = list(
-      CommandBarItem("Help", "https://google.com", target = "_blank"),
-      CommandBarItem("Contact", href = "https://google.com", target = "_blank")
+      #CommandBarItem("Help", "https://google.com", target = "_blank"),
+      CommandBarItem("Contact", href = "mailto:abi@leibniz-psychology.org", target = "_blank")
     )
   )
 )
@@ -100,7 +100,18 @@ navigation <- Nav(
   )
 )
 
-menu = IconButton.shinyInput("menu", iconProps = list(iconName = "CollapseMenu"))
+menu = IconButton.shinyInput(
+  "menu",
+  iconProps = list(
+    iconName = "CollapseMenu",
+    styles = list(
+      root = list(
+        color = "#241b3e",
+        fontWeight = 600
+      )
+    )
+  )
+)
 
 
 # footer <- Stack(

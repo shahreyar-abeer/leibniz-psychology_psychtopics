@@ -10,7 +10,46 @@
 mod_methods_ui <- function(id){
   ns <- NS(id)
   tagList(
- 
+    
+    shiny.fluent::Stack(
+      horizontal = TRUE,
+      div(
+        class = "ms-Grid-col ms-sm6 ms-xl6",
+        makeCard(
+          title = "Topic Identification",
+          size = 12,
+          content = tagList(
+            
+          )
+        )
+      ),
+      
+      div(
+        class = "ms-Grid-col ms-sm6 ms-xl6",
+        shiny.fluent::Stack(
+          div(
+            class = "ms-Grid-col ms-sm12 ms-xl12",
+            makeCard(
+              title = "Topic Identification",
+              size = 12,
+              content = tagList(
+                
+              )
+            )
+          ),
+          div(
+            class = "ms-Grid-col ms-sm12 ms-xl12",
+            makeCard(
+              title = "Topic Identification",
+              size = 12,
+              content = tagList(
+                
+              )
+            )
+          )
+        )
+      )
+    )
   )
 }
     

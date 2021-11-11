@@ -134,6 +134,7 @@ a {
     transition: width .5s ease-in;
     z-index: 2;
     top: 54px;
+    border-radius: 7px;
   }
   
   .main-opened {
@@ -154,6 +155,11 @@ a {
   .menu {
     display: block;
     grid-area: menu;
+  }
+  
+  .logo {
+    width: 180px;
+    height: 42px;
   }
   
   .one-card {
@@ -223,6 +229,11 @@ a {
   .menu {
     grid-area: menu;
     display: none;
+  }
+  
+  .logo {
+    width: 210px;
+    height: 49px;
   }
   
 }

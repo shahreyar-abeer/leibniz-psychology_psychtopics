@@ -55,7 +55,7 @@ mod_start_ui <- function(id){
           
           bodyText(
             tagList(
-              "Shiny App coded by: ",
+              "Shiny App Developed by: ",
               shiny.fluent::TooltipHost(
                 content = tagList(
                   shiny.fluent::Text("R Shiny Developer"),

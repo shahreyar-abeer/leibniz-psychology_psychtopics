@@ -29,5 +29,17 @@ $(document).ready(function() {
   
   //var chart = $('#htmlwidget_container').highcharts();
   //chart.series[0].data[1].select(true, true);
+  
+  // hide menu on click outside
+  
+  $('html').click(function(e) {
+  //if clicked element is not your element and parents aren't your div
+  if (e.target.id != '.sidenav' && e.target.id != '.menu' && $(e.target).parents('.sidenav').length == 0 && $(e.target).parents('.menu').length == 0 && $(window).width() < 768 && $('.sidenav').hasClass("sidenav-opened")) {
+    $(".sidenav").removeClass("sidenav-opened");
+    $(".main").removeClass("main-opened");
+    $(".title2").removeClass("title2-opened");
+  }
+});
+  
 
 });
