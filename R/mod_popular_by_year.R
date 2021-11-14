@@ -168,7 +168,7 @@ mod_popular_by_year_server <- function(id, r){
         echarts4r::e_bar(Freq, name = "N docs", bind = tooltip, selectedMode = TRUE, select = list(itemStyle = list(color = "#241b3e"))) %>% 
         echarts4r::e_title(text = glue::glue("Popular topics in {input$selected_year}")) %>% 
         echarts4r::e_flip_coords() %>% 
-        echarts4r::e_x_axis(name = "n_docs", nameLocation = "center", nameGap = 27) %>% 
+        echarts4r::e_x_axis(name = "number of documents", nameLocation = "center", nameGap = 27) %>% 
         echarts4r::e_y_axis(name = "ID", nameLocation = "center", nameRotate = 0, nameGap = 35, inverse = TRUE) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
@@ -193,7 +193,8 @@ mod_popular_by_year_server <- function(id, r){
           ")
         ) %>% 
         echarts4r::e_color(color = color) %>% 
-        echarts4r::e_show_loading()
+        echarts4r::e_show_loading() %>% 
+        echarts4r::e_legend(show = FALSE)
         #echarts4r::e_highlight(series_index = 0, dataIndex = 2)
         #echarts4r::e_add("itemStyle", colors)
         #echarts4r::e_add("dataIndex", 1:5)

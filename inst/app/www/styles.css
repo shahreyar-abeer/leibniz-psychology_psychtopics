@@ -34,6 +34,10 @@ a {
   margin-top: 11px;
 }
 
+.another-one {
+  background: red;
+}
+
 
 .main {
   grid-area: main;
@@ -182,6 +186,22 @@ a {
     margin-bottom: 20px;
   }
   
+
+  .mod-evol-slider-col1 {
+    width: 0;
+  }
+  
+  .mod-evol-slider-col2 {
+    width: 90%;
+  }
+  
+  .mod-evol-search1 {
+    width: 5%;
+  }
+  
+  .mod-evol-search2 {
+    width: 85%;
+  }
   
 }
 
@@ -196,6 +216,16 @@ a {
     display: grid;
     grid-template-columns: 100%;
   }
+  
+  .mod-evol-search1 {
+    width: 20%;
+  }
+  
+  .mod-evol-search2 {
+    width: 40%;
+  }
+  
+  
 }
 
 @media only screen and (min-width: 768px) {
@@ -236,6 +266,7 @@ a {
     height: 49px;
   }
   
+  
 }
 
 
@@ -274,6 +305,14 @@ a {
   
   .tab2-box4 {
     width: 91.66%;
+  }
+  
+  .mod-evol-slider-col1 {
+    width: 30%;
+  }
+  
+  .mod-evol-slider-col2 {
+    width: 28.3333%;
   }
   
 

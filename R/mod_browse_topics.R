@@ -24,7 +24,7 @@ mod_browse_topics_ui <- function(id){
           br(),
           bodyText("Select topics in the table below for adding them to the plots."),
           br(),
-          bodyText("For Trends, only records from 1980 to [current_year - 1] are included, since publications of the current year are not yet fully covered. (learn more)")
+          uiOutput(ns("cur_year_text"))
         )
       ),
       
@@ -94,6 +94,13 @@ mod_browse_topics_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    output$cur_year_text = renderUI({
+      req(r$current_year)
+      bodyText(glue::glue("For Trends, only records from 1980 to {r$current_year - 1} are included,
+               since publications of the {r$current_year} are not yet fully covered. "),
+               tags$a("Learn more", href = "www.google.com", target = "_blank"))
+    })
+    
     topic = reactive({
       r$topic %>% 
         dplyr::mutate(
@@ -127,15 +134,17 @@ mod_browse_topics_server <- function(id, r){
         dplyr::filter(id %in% id_selected()) %>% 
 
         #tibble::glimpse(.) %>% 
-        dplyr::group_by(id) %>% 
         dplyr::mutate(
-          tooltip = glue::glue("{TopTerms};{id}"),
-          year = as.character(year)
+          tooltip = glue::glue("{TopTerms};{id};{Label}"),
+          year = as.character(year),
+          Label = factor(Label)
         ) %>% 
+        dplyr::group_by(Label) %>% 
+        
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(Freq, bind = tooltip) %>% 
         echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, axisPointer = list(snap = TRUE)) %>% 
-        echarts4r::e_y_axis(name = "n_docs", nameLocation = "center", nameGap = 35) %>% 
+        echarts4r::e_y_axis(name = "no of documents", nameLocation = "end", nameGap = 15) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
           appendToBody = TRUE,
@@ -145,6 +154,7 @@ mod_browse_topics_server <- function(id, r){
             function(params){
               var vals = params.name.split(';');
               return('ID: ' + vals[1] + 
+                      '<br/> Label: ' + vals[2] + 
                       '<br/> N docs: ' + params.value[1]) +
                       '<br/> Year: ' + params.value[0] + 
                       '<br/> Topic: ' + vals[0]
@@ -164,9 +174,9 @@ mod_browse_topics_server <- function(id, r){
         dplyr::filter(id %in% id_selected()) %>% 
         
         #tibble::glimpse(.) %>% 
-        dplyr::group_by(id) %>% 
+        dplyr::group_by(Label) %>% 
         dplyr::mutate(
-          tooltip = glue::glue("{TopTerms};{id}"),
+          tooltip = glue::glue("{TopTerms};{id};{Label}"),
           year = as.character(year)
         ) %>% 
         echarts4r::e_charts(year) %>% 
@@ -181,6 +191,7 @@ mod_browse_topics_server <- function(id, r){
             function(params){
               var vals = params.name.split(';');
               return('ID: ' + vals[1] + 
+                      '<br/> Label: ' + vals[2] + 
                       '<br/> Empirical research: ' + params.value[1]) + '%' +
                       '<br/> Year: ' + params.value[0] + 
                       '<br/> Topic: ' + vals[0]

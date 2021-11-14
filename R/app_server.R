@@ -50,12 +50,16 @@ app_server <- function( input, output, session ) {
   
   
   
+  ## update these two lines by hand
+  r$last_updated = "18th Oct, 2021"
+  r$current_year = 2019
+  
   
   mod_start_server("start", r)
   mod_browse_topics_server("browse", r)
   mod_popular_by_year_server("popular", r)
   mod_hot_cold_server("hot_cold", r)
-  mod_topic_eval_server("topic_eval", r)
+  mod_topic_evol_server("topic_evol", r)
   mod_methods_server("methods")
   
   router$server(input, output, session)

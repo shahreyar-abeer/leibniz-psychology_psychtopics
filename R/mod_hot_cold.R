@@ -57,7 +57,7 @@ mod_hot_cold_ui <- function(id){
           
           br(),
           br(),
-          bodyText("For Trends, only records from 1980 to [current_year - 1] are included, since publications of the current year are not yet fully covered.")
+          uiOutput(ns("cur_year_text"))
         ),
         
         
@@ -148,17 +148,19 @@ mod_hot_cold_server <- function(id, r){
       upper = NULL
     )
     
+    output$cur_year_text = renderUI({
+      req(r$current_year)
+      bodyText(glue::glue("For Trends, only records from 1980 to {r$current_year - 1} are included,
+               since publications of the {r$current_year} are not yet fully covered. "))
+    })
+    
     observeEvent(r$current_year, {
-      print("r$current_year")
-      shiny.react::updateReactInput(
-        session = session,
-        inputId = ns("slider"),
-        max = r$current_year
-      )
+      golem::invoke_js("setSlider", list = list(id = ns("slider"), vals = c(2015, 2019)))
     })
     
     observeEvent(input$slider, {
       #req(r_mod_hot_cold$lower)
+      
       
       if (!is.null(r_mod_hot_cold$lower)) {
         #print("slider is null")
@@ -172,6 +174,7 @@ mod_hot_cold_server <- function(id, r){
 
       } else {
         shiny.fluent::updateIconButton.shinyInput(inputId = "go", disabled = FALSE)
+        golem::invoke_js("clickGo", list = list(button = ns("go")))
       }
     })
     
@@ -251,15 +254,15 @@ mod_hot_cold_server <- function(id, r){
         dplyr::select(-time) %>% 
         dplyr::filter(id %in% id_selected_hot()) %>%
         dplyr::left_join(r$topic, by = c("id" = "ID")) %>%
-        dplyr::group_by(id) %>% 
+        dplyr::group_by(Label) %>% 
         dplyr::mutate(
-          tooltip = glue::glue("{TopTerms};{id}"),
+          tooltip = glue::glue("{TopTerms};{id};{Label}"),
           value = round(value * 100, 2)
         ) %>% 
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(value, bind = tooltip) %>% 
         echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, axisPointer = list(snap = TRUE)) %>% 
-        echarts4r::e_y_axis(name = "n_docs", nameLocation = "center", nameGap = 30) %>% 
+        echarts4r::e_y_axis(name = "number of documents", nameLocation = "center", nameGap = 30) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
           appendToBody = TRUE,
@@ -269,6 +272,7 @@ mod_hot_cold_server <- function(id, r){
             function(params){
               var vals = params.name.split(';');
               return('ID: ' + vals[1] +
+                      '<br/> Label: ' + vals[2] + 
                       '<br/> N docs: ' + params.value[1]) +
                       '<br/> Year: ' + params.value[0] +
                       '<br/> Topic: ' + vals[0]
@@ -290,15 +294,15 @@ mod_hot_cold_server <- function(id, r){
         dplyr::select(-time) %>% 
         dplyr::filter(id %in% id_selected_cold()) %>%
         dplyr::left_join(r$topic, by = c("id" = "ID")) %>%
-        dplyr::group_by(id) %>% 
+        dplyr::group_by(Label) %>% 
         dplyr::mutate(
-          tooltip = glue::glue("{TopTerms};{id}"),
+          tooltip = glue::glue("{TopTerms};{id};{Label}"),
           value = round(value * 100, 2)
         ) %>% 
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(value, bind = tooltip) %>% 
         echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, axisPointer = list(snap = TRUE)) %>% 
-        echarts4r::e_y_axis(name = "n_docs", nameLocation = "center", nameGap = 30) %>% 
+        echarts4r::e_y_axis(name = "number of documents", nameLocation = "center", nameGap = 30) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
           appendToBody = TRUE,
@@ -308,6 +312,7 @@ mod_hot_cold_server <- function(id, r){
             function(params){
               var vals = params.name.split(';');
               return('ID: ' + vals[1] +
+                      '<br/> Label: ' + vals[2] + 
                       '<br/> N docs: ' + params.value[1]) +
                       '<br/> Year: ' + params.value[0] +
                       '<br/> Topic: ' + vals[0]

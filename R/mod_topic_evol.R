@@ -1,4 +1,4 @@
-#' topic_eval UI Function
+#' topic_evol UI Function
 #'
 #' @description A shiny Module.
 #'
@@ -7,7 +7,7 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
-mod_topic_eval_ui <- function(id){
+mod_topic_evol_ui <- function(id){
   ns <- NS(id)
   tagList(
     div(
@@ -25,14 +25,14 @@ mod_topic_eval_ui <- function(id){
           shiny.fluent::Stack(
             horizontal = TRUE,
             div(
-              class = "ms-Grid-col ms-sm4 ms-xl4"
+              class = "ms-Grid-col ms-sm2 ms-xl2 mod-evol-search1"
             ),
             div(
-              class = "ms-Grid-col ms-sm4 ms-xl4",
+              class = "ms-Grid-col ms-sm5 ms-xl5 mod-evol-search2",
               shiny.fluent::Label("Select a Topic"),
               shiny.fluent::NormalPeoplePicker.shinyInput(
                 inputId = ns("search"),
-                options = data.frame(key = 1:10, imageUrl = NA, imageInitials = NA, text = letters[1:10], secondaryText = LETTERS[1:10], presence = 0, initialsColor = 22),
+                options = 1:10,
                 itemLimit = 1
               )
             )
@@ -40,8 +40,7 @@ mod_topic_eval_ui <- function(id){
           
           br(),
           br(),
-          bodyText("For Trends, only records from 1980 to [current_year - 1] are included, since publications of the current year are not yet fully covered.")
-          
+          uiOutput(ns("cur_year_text"))
         )
       ),
       
@@ -66,9 +65,9 @@ mod_topic_eval_ui <- function(id){
           br(),
           shiny.fluent::Stack(
             horizontal = TRUE,
-            div(class = "ms-Grid-col ms-sm4 ms-xl4"),
+            div(class = "ms-Grid-col ms-sm4 ms-xl4 mod-evol-slider-col1"),
             div(
-              class = "ms-Grid-col ms-sm3 ms-xl3",
+              class = "ms-Grid-col ms-sm3 ms-xl3 mod-evol-slider-col2",
               
               ## may need to be changed when https://github.com/Appsilon/shiny.fluent/issues/63 is solved
               shiny.fluent::Slider(
@@ -106,7 +105,7 @@ mod_topic_eval_ui <- function(id){
 #' topic_eval Server Functions
 #'
 #' @noRd 
-mod_topic_eval_server <- function(id, r){
+mod_topic_evol_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
@@ -115,16 +114,40 @@ mod_topic_eval_server <- function(id, r){
       upper = NULL
     )
     
+    output$cur_year_text = renderUI({
+      req(r$current_year)
+      bodyText(glue::glue("For Trends, only records from 1980 to {r$current_year - 1} are included,
+               since publications of the {r$current_year} are not yet fully covered. "))
+    })
+    
     observeEvent(r$topic, {
       req(r$topic)
+      
+      options_data = data.frame(
+        key = r$topic$ID,
+        imageUrl = NA,
+        imageInitials = as.character(r$topic$ID),
+        text = as.character(r$topic$Label),
+        secondaryText = r$topic$ID,
+        presence = 0,
+        initialsColor = 22
+      )
+      
+      
       shiny.fluent::updateNormalPeoplePicker.shinyInput(
         inputId = "search",
-        options = data.frame(key = r$topic$ID, imageUrl = NA, imageInitials = as.character(r$topic$ID), text = as.character(r$topic$Label), secondaryText = r$topic$ID, presence = 0, initialsColor = 22)
+        options = options_data,
+        #value = options_data[1, ],
+        defaultSelectedItems = options_data[1, ]
       )
+      
+      golem::invoke_js("pickOne", list = list())
+      golem::invoke_js("setSlider", list = list(id = ns("slider"), vals = c(2015, 2019)))
     })
     
     observeEvent(input$slider, {
       #req(r_mod_topic_eval$lower)
+
       
       if (!is.null(r_mod_topic_eval$lower)) {
         #print("slider is null")
@@ -138,6 +161,7 @@ mod_topic_eval_server <- function(id, r){
         
       } else {
         shiny.fluent::updateIconButton.shinyInput(inputId = "go", disabled = FALSE)
+        golem::invoke_js("clickGo", list = list(button = ns("go")))
       }
     })
     
@@ -178,16 +202,16 @@ mod_topic_eval_server <- function(id, r){
     })
     
     
-    observeEvent(input$search, {
-      print(input$search)
-      
-      r$topic %>% 
-        dplyr::filter(ID == input$search) %>% 
-        print()
-      
-      r$topic_evo[[input$search]] %>% print()
-      
-    })
+    # observeEvent(input$search, {
+    #   print(input$search)
+    #   
+    #   r$topic %>% 
+    #     dplyr::filter(ID == input$search) %>% 
+    #     print()
+    #   
+    #   r$topic_evo[[input$search]] %>% print()
+    #   
+    # })
     
     output$table = reactable::renderReactable({
       req(r$topic_evo, input$search, r_mod_topic_eval$lower)
@@ -199,7 +223,7 @@ mod_topic_eval_server <- function(id, r){
           rownames = FALSE,
           compact = TRUE,
           striped = TRUE,
-          searchable = TRUE,
+          searchable = FALSE,
           sortable = FALSE,
           resizable = TRUE,
           fullWidth = TRUE,
@@ -238,15 +262,15 @@ mod_topic_eval_server <- function(id, r){
       r$n_doc_year %>%
         dplyr::filter(id == input$search) %>% 
         dplyr::left_join(r$topic, by = c("id" = "ID")) %>%
-        dplyr::group_by(id) %>% 
+        dplyr::group_by(Label) %>% 
         dplyr::mutate(
-          tooltip = glue::glue("{TopTerms};{id}"),
+          tooltip = glue::glue("{TopTerms};{id};{Label}"),
           year = as.character(year)
         ) %>% 
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(Freq, bind = tooltip) %>% 
         echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, axisPointer = list(snap = TRUE)) %>% 
-        echarts4r::e_y_axis(name = "n_docs", nameLocation = "center", nameGap = 35) %>% 
+        echarts4r::e_y_axis(name = "number of documents", nameLocation = "center", nameGap = 38) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
           appendToBody = TRUE,
@@ -256,6 +280,7 @@ mod_topic_eval_server <- function(id, r){
             function(params){
               var vals = params.name.split(';');
               return('ID: ' + vals[1] + 
+                      '<br/> Label: ' + vals[2] + 
                       '<br/> N docs: ' + params.value[1]) +
                       '<br/> Year: ' + params.value[0] + 
                       '<br/> Topic: ' + vals[0]

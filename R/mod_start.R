@@ -230,16 +230,9 @@ mod_start_server <- function(id, r){
     ns <- session$ns
     
     output$last_update = renderUI({
-      req(r$theta_mean_by_year)
-      ## update these two line by hand
-      date_updated = "18th Oct, 2021"
-      current_year = 2019
-      
-      ##---
-      
-      r$current_year = current_year
-      r$last_updated = date_updated
-      glue::glue("PsychTopics is updated quarterly. Last update: {date_updated}")
+      req(r$last_updated)
+
+      glue::glue("PsychTopics is updated quarterly. Last update: {r$last_updated}")
     })
     # 
     # observeEvent(input$dropdown_most_popular1, {
@@ -291,7 +284,7 @@ mod_start_server <- function(id, r){
         echarts4r::e_bar(Freq, name = "n-docs", bind = TopTerms) %>% 
         echarts4r::e_title(text = glue::glue("Popular topics in {r$latest_year}")) %>% 
         echarts4r::e_flip_coords() %>% 
-        echarts4r::e_x_axis(name = "n_docs", nameLocation = "center", nameGap = 27) %>% 
+        echarts4r::e_x_axis(name = "number of documents", nameLocation = "center", nameGap = 27) %>% 
         echarts4r::e_y_axis(name = "ID", nameLocation = "center", nameRotate = 0, nameGap = 35, inverse = TRUE) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
@@ -313,7 +306,8 @@ mod_start_server <- function(id, r){
               }
           ")
         ) %>% 
-        echarts4r::e_color(color = color)
+        echarts4r::e_color(color = color) %>% 
+        echarts4r::e_legend(show = FALSE)
       
       
     })
@@ -344,7 +338,7 @@ mod_start_server <- function(id, r){
         dplyr::slice_head(n = top) %>% 
         #tibble::glimpse(.) %>% 
         dplyr::mutate(
-          id2 = as.factor(glue::glue("{id} ({year})"))
+          id2 = as.factor(id)
         )
       
       #print(tail(df))
@@ -358,7 +352,7 @@ mod_start_server <- function(id, r){
         echarts4r::e_bar(Freq, name = "n-docs", bind = TopTerms) %>% 
         echarts4r::e_title(text = "Popular topics overall") %>% 
         echarts4r::e_flip_coords() %>% 
-        echarts4r::e_x_axis(name = "n_docs", nameLocation = "center", nameGap = 27) %>% 
+        echarts4r::e_x_axis(name = "number of documents", nameLocation = "center", nameGap = 27) %>% 
         echarts4r::e_y_axis(inverse = TRUE) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
@@ -380,7 +374,8 @@ mod_start_server <- function(id, r){
               }
           ")
         ) %>% 
-        echarts4r::e_color(color = color)
+        echarts4r::e_color(color = color) %>% 
+        echarts4r::e_legend(show = FALSE)
       
 
       # hch2 = df %>%

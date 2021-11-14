@@ -50,7 +50,7 @@ header <- tagList(
     ),
     farItems = list(
       #CommandBarItem("Help", "https://google.com", target = "_blank"),
-      CommandBarItem("Contact", href = "mailto:abi@leibniz-psychology.org", target = "_blank")
+      CommandBarItem("Contact", href = "https://psyndex.de/en/trends/psychtopics/", target = "_blank")
     )
   )
 )
@@ -70,7 +70,7 @@ navigation <- Nav(
       list(name = 'Browse Topics', url = '#!/browse-topics', key = 'browse'),
       list(name = 'Popular by Year', url = '#!/popular', key = 'popular'),
       list(name = 'Hot/Cold', url = '#!/hot-cold', key = 'hot-cold'),
-      list(name = 'Topic Evaluation', url = '#!/topic-evaluation', key = 'topic-evaluation'),
+      list(name = 'Topic Evolution', url = '#!/topic-evolution', key = 'topic-evolution'),
       list(name = 'Methods', url = '#!/methods', key = 'methods')
     ))
   ),
