@@ -51,7 +51,7 @@ a {
 .buttons-tab2 {
   background: #241b3e;
   border: 1px solid #241b3e;
-  transition: background .5s ease;
+  transition: background .3s ease;
 }
 
 .buttons-tab2:hover {
