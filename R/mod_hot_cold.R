@@ -165,7 +165,7 @@ mod_hot_cold_server <- function(id, r){
       if (!is.null(r_mod_hot_cold$lower)) {
         #print("slider is null")
         
-        if (r_mod_hot_cold$lower != input$slider[1]) {
+        if (r_mod_hot_cold$lower != input$slider[1] | r_mod_hot_cold$upper != input$slider[2]) {
           shiny.fluent::updateIconButton.shinyInput(inputId = "go", disabled = FALSE)
         } else {
           shiny.fluent::updateIconButton.shinyInput(inputId = "go", disabled = TRUE)

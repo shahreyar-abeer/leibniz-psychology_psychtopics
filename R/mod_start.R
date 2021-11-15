@@ -82,9 +82,18 @@ mod_start_ui <- function(id){
       ),
       makeCard(
         size = 12,
-        title = "How To Use PsychTopics",
+        title = tagList(
+          "How To Use PsychTopics"
+          # div(
+          #   style = "float:right",
+          #   shiny.fluent::IconButton.shinyInput(inputId = ns("help"), iconProps = list(iconName = "Help"), class = "buttons-tab2")
+          # )
+        ),
         style = "background-color: #c6cf78ff",
         content = tagList(
+          
+
+          
           bodyText(
             "Use the menu on the left for different topic views.
             Look out for information icons in the top right corner of the boxes"
