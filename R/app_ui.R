@@ -36,8 +36,30 @@ golem_add_external_resources <- function(){
       path = app_sys('app/www'),
       app_title = 'psychtopics'
     ),
+    
+    ## set viewport for mobile scaling
     tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
-    tags$script(type = "text/javascript", src = file.path("shiny.router", "shiny.router.js"))
+    
+    ## js code for shiny.router
+    tags$script(type = "text/javascript", src = file.path("shiny.router", "shiny.router.js")),
+    
+    ## add matomo tracking
+    HTML(
+      "<script>
+      var _paq = window._paq = window._paq || [];
+      /* tracker methods like 'setCustomDimension' should be called before 'trackPageView' */
+      _paq.push(['disableCookies']);
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u='https://mtm.leibniz-psychology.org/';
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '26']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>"
+    )
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert() 
   )
