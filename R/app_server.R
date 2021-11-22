@@ -8,32 +8,34 @@ app_server <- function( input, output, session ) {
   
   r = reactiveValues()
   
-  # Your application server logic 
-  # router <- shiny.router::make_router(
-  #   route("/", home_page),
-  #   route("browse-topics", mod_browse_topics_ui("browse"))
-  # )
-  # 
-  # observeEvent(router, {
-  #   r$router = router
-  # })
+  r$n_docs_year <- isolate(readRDS("inst/data/n_docs_year.RDS"))
   
-  # data ----
-  # result of topic modeling (LDA.R)
-  r$theta_year <- isolate(readRDS("inst/data/theta_year.RDS")) # theta_mean_by_year with labels instead of topic numbers
-  r$theta_mean_by_year <- isolate(readRDS("inst/data/theta_mean_by_year.RDS")) # mean theta of topic by year
-  r$theta_mean_by_year_time <- isolate(readRDS("inst/data/theta_mean_by_year_time.RDS")) # for trend analysis
-  r$theta_mean_by_year_ts <- isolate(readRDS("inst/data/theta_mean_by_year_ts.RDS")) # for trend analysis
+  n_docs_year_id <- readRDS("inst/data/n_docs_year.RDS") # topic ids instead of labels
+  colnames(n_docs_year_id) <- 1:ncol(n_docs_year_id)
+  
+  K <- ncol(n_docs_year_id) # number of topics
+  k <- K # just in case of different variants in the code
+  
   r$years <- isolate(readRDS("inst/data/years.RDS")) # a list of publication years
+  years = isolate(r$years)
+  n_years <- isolate(length(r$years))
+  
+  r$n_docs_time <- time(n_docs_year_id) # for trend analysis
+  r$n_docs_ts <- ts(n_docs_year_id, start = as.integer(years[1])) # Time-series
+  
+
+  
+  
   r$topic <- isolate(readRDS("inst/data/topic.RDS")) # a list of topics and top terms
   r$booster <- isolate(readRDS("inst/data/booster.RDS")) # a table with factors for term boosting in PubPsych.eu
+  
   r$n_doc_year = isolate(readRDS("inst/data/n_docs_year.RDS")) %>% 
     as.table() %>% 
     as.data.frame() %>% 
     dplyr::mutate(
       year = as.numeric(as.character(Var1)),
       label = Var2,
-      id = rep(1:199, each = 40),
+      id = rep(1:k, each = n_years),
       Freq = round(Freq, 2)
     )
   r$empirical = isolate(readRDS("inst/data/empirical_year.RDS")) %>% 
@@ -42,17 +44,16 @@ app_server <- function( input, output, session ) {
     dplyr::mutate(
       year = as.numeric(as.character(Var1)),
       label = Var2,
-      id = rep(1:199, each = 40),
+      id = rep(1:k, each = n_years),
       Freq = round(Freq, 2)
     )
   r$topic_evo = readRDS("./inst/data/topic_evo.RDS")
-  r$k <- 325 # set number of topics in the model (all topics, not only the reliable ones)
-  
+
   
   
   ## update these two lines by hand
   r$last_updated = "18th Oct, 2021"
-  r$current_year = 2019
+  r$current_year = isolate(max(r$years))
   
   
   mod_start_server("start", r)

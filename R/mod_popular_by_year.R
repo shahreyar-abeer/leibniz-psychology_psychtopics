@@ -154,7 +154,7 @@ mod_popular_by_year_server <- function(id, r){
         #dplyr::left_join(r$topic, by = c("id" = "Nr..")) %>% 
         dplyr::mutate(
           id2 = as.factor(id),
-          tooltip = glue::glue("{TopTerms}; {input$selected_year}")
+          tooltip = glue::glue("{TopTerms}; {input$selected_year};{Label}")
         )
       
       r_mod_pby$df = df
@@ -176,6 +176,7 @@ mod_popular_by_year_server <- function(id, r){
             function(params){
               var vals = params.name.split(';');
               return('ID: ' + params.value[1] + 
+                      '<br/> Label: ' + vals[2] +
                       '<br/> N docs: ' + params.value[0]) +
                       '<br/> Year: ' + vals[1] + 
                       '<br/> Topic: ' + vals[0]
@@ -188,7 +189,7 @@ mod_popular_by_year_server <- function(id, r){
           color = "#fff",
           formatter = htmlwidgets::JS("
             function(params){
-              return(params.name.split(',').slice(0,1))
+              return(params.name.split(';')[2])
               }
           ")
         ) %>% 

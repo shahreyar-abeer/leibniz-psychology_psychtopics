@@ -26,18 +26,17 @@ col_highlight <- "gold"
 # colors in tags$style have to be set manually in respective lines
 
 # PubPsych.eu search terms are boosted according to the relations of beta probabilites
-# Factors were computed by dividing the beta probabilites of Terms 1-4 by beta of Term 5
+# Factors were computed by dividing the beta probabilites of Terms 1-9 by beta of Term 10
 
 
 createLink <- function(val, boost, topicnum) {
   list <- list()
   for (i in 1:length(val)){
     list[[i]] <- unlist(strsplit(val[i], ", ", fixed = TRUE))
-    for (j in 1:4){
-      list[[i]][j] <- paste0('"', list[[i]][j], '"%5E', boost[j, topicnum[i]]) # add boost factors for first 4 terms
-      # list[[i]][j] <- paste0('"', list[[i]][j], '"%5E', boost[[i]][j]) STM version
+    for (j in 1:9){
+      list[[i]][j] <- paste0('"', list[[i]][j], '"%5E', boost[j, topicnum[i]]) # add boost factors for first 9 terms
     }
-    list[[i]][5] <- paste0('"', list[[i]][5], '"') # Term 5 is reference, so no boosting
+    list[[i]][10] <- paste0('"', list[[i]][10], '"') # Term 10 is reference, so no boosting
     list[[i]] <- paste0(list[[i]], collapse="+OR+")
     list[[i]] <- gsub("'", "%27", list[[i]])
   }

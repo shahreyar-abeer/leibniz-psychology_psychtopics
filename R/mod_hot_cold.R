@@ -135,7 +135,7 @@ mod_hot_cold_ui <- function(id){
   )
   
 }
-    
+
 #' hot_cold Server Functions
 #'
 #' @noRd 
@@ -171,7 +171,7 @@ mod_hot_cold_server <- function(id, r){
           shiny.fluent::updateIconButton.shinyInput(inputId = "go", disabled = TRUE)
         }
         
-
+        
       } else {
         shiny.fluent::updateIconButton.shinyInput(inputId = "go", disabled = FALSE)
         golem::invoke_js("clickGo", list = list(button = ns("go")))
@@ -185,7 +185,7 @@ mod_hot_cold_server <- function(id, r){
       } else {
         HTML("Hot Topics from", r_mod_hot_cold$lower, "to", r_mod_hot_cold$upper)
       }
-
+      
     })
     
     output$title_box3 = renderUI({
@@ -223,8 +223,8 @@ mod_hot_cold_server <- function(id, r){
       req(r_mod_hot_cold$lower, r_mod_hot_cold$upper)
       
       trends.ab(r_mod_hot_cold$lower-1979, r_mod_hot_cold$upper-1979, 
-                r$theta_year, r$theta_mean_by_year, r$theta_mean_by_year_time,
-                r$theta_mean_by_year_ts, r$years, r$topic)
+                r$n_docs_year, r$n_docs_time,
+                r$n_docs_ts, r$years, r$topic)
       
     })
     
@@ -256,8 +256,8 @@ mod_hot_cold_server <- function(id, r){
         dplyr::left_join(r$topic, by = c("id" = "ID")) %>%
         dplyr::group_by(Label) %>% 
         dplyr::mutate(
-          tooltip = glue::glue("{TopTerms};{id};{Label}"),
-          value = round(value * 100, 2)
+          tooltip = glue::glue("{TopTerms};{id};{Label}")#,
+          #value = round(value * 100, 2) # used for theta only
         ) %>% 
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(value, bind = tooltip) %>% 
@@ -296,8 +296,8 @@ mod_hot_cold_server <- function(id, r){
         dplyr::left_join(r$topic, by = c("id" = "ID")) %>%
         dplyr::group_by(Label) %>% 
         dplyr::mutate(
-          tooltip = glue::glue("{TopTerms};{id};{Label}"),
-          value = round(value * 100, 2)
+          tooltip = glue::glue("{TopTerms};{id};{Label}")#,
+          #value = round(value * 100, 2) # used for theta only
         ) %>% 
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(value, bind = tooltip) %>% 
@@ -441,4 +441,4 @@ mod_hot_cold_server <- function(id, r){
     
   })  ## module_server  
 }
-    
+

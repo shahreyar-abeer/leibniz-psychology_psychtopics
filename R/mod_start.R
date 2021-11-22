@@ -282,7 +282,8 @@ mod_start_server <- function(id, r){
         dplyr::arrange(-Freq) %>% 
         dplyr::slice_head(n = top) %>% 
         dplyr::mutate(
-          id2 = as.factor(id)
+          id2 = as.factor(id),
+          tooltip = glue::glue("{TopTerms};{Label}"),
         )
       
       
@@ -290,7 +291,7 @@ mod_start_server <- function(id, r){
       
       df %>% 
         echarts4r::e_charts(id2) %>% 
-        echarts4r::e_bar(Freq, name = "n-docs", bind = TopTerms) %>% 
+        echarts4r::e_bar(Freq, name = "n-docs", bind = tooltip) %>% 
         echarts4r::e_title(text = glue::glue("Popular topics in {r$latest_year}")) %>% 
         echarts4r::e_flip_coords() %>% 
         echarts4r::e_x_axis(name = "number of documents", nameLocation = "center", nameGap = 27) %>% 
@@ -299,9 +300,11 @@ mod_start_server <- function(id, r){
           confine = TRUE,
           formatter = htmlwidgets::JS("
             function(params){
-              return('ID: ' + params.value[1] + 
+              var vals = params.name.split(';');
+              return('ID: ' + params.value[1] +
+                      '<br/> Label: ' + vals[1] +
                       '<br/> N docs: ' + params.value[0]) + 
-                      '<br/> Topic: ' + params.name
+                      '<br/> Topic: ' + vals[0]
                       }
           ")
         ) %>% 
@@ -311,7 +314,7 @@ mod_start_server <- function(id, r){
           color = "#fff",
           formatter = htmlwidgets::JS("
             function(params){
-              return(params.name.split(',').slice(0,1))
+              return(params.name.split(';')[1])
               }
           ")
         ) %>% 
@@ -347,7 +350,8 @@ mod_start_server <- function(id, r){
         dplyr::slice_head(n = top) %>% 
         #tibble::glimpse(.) %>% 
         dplyr::mutate(
-          id2 = as.factor(id)
+          id2 = as.factor(id),
+          tooltip = glue::glue("{TopTerms};{Label}"),
         )
       
       #print(tail(df))
@@ -358,7 +362,7 @@ mod_start_server <- function(id, r){
       
       df %>% 
         echarts4r::e_charts(id2, reorder = FALSE) %>% 
-        echarts4r::e_bar(Freq, name = "n-docs", bind = TopTerms) %>% 
+        echarts4r::e_bar(Freq, name = "n-docs", bind = tooltip) %>% 
         echarts4r::e_title(text = "Popular topics overall") %>% 
         echarts4r::e_flip_coords() %>% 
         echarts4r::e_x_axis(name = "number of documents", nameLocation = "center", nameGap = 27) %>% 
@@ -367,9 +371,11 @@ mod_start_server <- function(id, r){
           confine = TRUE,
           formatter = htmlwidgets::JS("
             function(params){
-              return('ID: ' + params.value[1] + 
+              var vals = params.name.split(';');
+              return('ID: ' + params.value[1] +
+                      '<br/> Label: ' + vals[1] +
                       '<br/> N docs: ' + params.value[0]) + 
-                      '<br/> Topic: ' + params.name
+                      '<br/> Topic: ' + vals[0]
                       }
           ")
         ) %>% 
@@ -379,7 +385,7 @@ mod_start_server <- function(id, r){
           color = "#fff",
           formatter = htmlwidgets::JS("
             function(params){
-              return(params.name.split(',').slice(0,1))
+              return(params.name.split(';')[1])
               }
           ")
         ) %>% 

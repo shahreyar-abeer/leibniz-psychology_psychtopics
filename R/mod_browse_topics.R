@@ -144,7 +144,7 @@ mod_browse_topics_server <- function(id, r){
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(Freq, bind = tooltip) %>% 
         echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, axisPointer = list(snap = TRUE)) %>% 
-        echarts4r::e_y_axis(name = "no of documents", nameLocation = "end", nameGap = 15) %>% 
+        echarts4r::e_y_axis(name = "no of documents", nameLocation = "center", nameGap = 31) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
           appendToBody = TRUE,
