@@ -17,22 +17,26 @@ mod_start_ui <- function(id){
         title = "About PsychTopics",
         style = "background-color: #c6cf78ff",
         content = tagList(
-          bodyText(tagList("With PsychTopics, you can explore current and past research trends in psychology from the ",  tags$b("German-speaking countries."))),
           bodyText(
-            tagList(
-              "Topics are identified in ", tags$a("PSYNDEX", href = "http://www.psyndex.de", target = "_blank"),
-              ", the comprehensive database produced by the Leibniz Institute for Psychology (ZPID)."
+            tagList("With PsychTopics, you can explore current and past ",
+                    tags$b("research trends in psychology"),
+                    " from the ",  tags$b("German-speaking countries."),
+                    " Topics are identified in ", tags$a("PSYNDEX", href = "http://www.psyndex.de", target = "_blank"),
+                    ", the comprehensive literature database produced by the ",
+                    tags$a("Leibniz Institute for Psychology", href = "https://www.leibniz-psychology.org/en/", target = "_blank"),
+                    " (ZPID)."
             )
           ),
-          
-          # bodyText(tagList("Conclusions should be drawn carefully, as topics are derived from the ",
-          #                  tags$a("PSYNDEX database", href = "http://www.psyndex.de", target = "_blank"),
-          #                  tags$b(" automatically using machine learning algorithms."), 
-          #                  " PsychTopics is in an experimental state, makes no claim to completeness and cannot replace specific search strategies.")),
           br(),
           bodyText(uiOutput(ns("last_update"))),
           
-          br(),
+          bodyText(
+            "PsychTopics is ", tags$b("open-source software"), ".", br(),
+            " See the ",
+            tags$a("GitHub repo", href = "https://github.com/leibniz-psychology", target = "_blank"),
+            " for a list of ", tags$b("contributors"), " and the code."
+          ),
+          
           bodyText(
             tagList(
               "How to cite: ",
@@ -51,29 +55,29 @@ mod_start_ui <- function(id){
 
               )
             )
-          ),
-          
-          bodyText(
-            tagList(
-              "Shiny App Developed by: ",
-              shiny.fluent::TooltipHost(
-                content = tagList(
-                  shiny.fluent::Text("R Shiny Developer"),
-                  br(),
-                  tags$a("the way we R", href = "http://dx.doi.org/10.23668/psycharchives.2521", target = "_blank")
-                ),
-                delay = 0,
-                tags$a("Zauad Shahreer Abeer")
-                
-              )
-            )
-          ),
-          bodyText(
-            tagList(
-              "PsychTopics is open-source software ",
-              tags$a("(explore the code)", href = "https://www.google.com", target = "_blank")
-            )
           )
+          
+          # bodyText(
+          #   tagList(
+          #     "Shiny App Developed by: ",
+          #     shiny.fluent::TooltipHost(
+          #       content = tagList(
+          #         shiny.fluent::Text("R Shiny Developer"),
+          #         br(),
+          #         tags$a("the way we R", href = "http://dx.doi.org/10.23668/psycharchives.2521", target = "_blank")
+          #       ),
+          #       delay = 0,
+          #       tags$a("Zauad Shahreer Abeer")
+          #       
+          #     )
+          #   )
+          # ),
+          # bodyText(
+          #   tagList(
+          #     "PsychTopics is open-source software ",
+          #     tags$a("(explore the code)", href = "https://www.google.com", target = "_blank")
+          #   )
+          # )
           
         )
       ),
@@ -83,32 +87,35 @@ mod_start_ui <- function(id){
       makeCard(
         size = 12,
         title = tagList(
-          "How To Use PsychTopics"
-          # div(
-          #   style = "float:right",
-          #   shiny.fluent::IconButton.shinyInput(inputId = ns("help"), iconProps = list(iconName = "Help"), class = "buttons-tab2")
-          # )
+          "How To Use PsychTopics",
+          div(
+            style = "float:right",
+            shiny.fluent::IconButton.shinyInput(inputId = ns("help1"), iconProps = list(iconName = "Info", className = "icon-help"), class = "button-help-green")
+          )
         ),
         style = "background-color: #c6cf78ff",
         content = tagList(
           
-
           
           bodyText(
-            "Use the menu on the left for different topic views.
-            Look out for information icons in the top right corner of the boxes"
-          ),
-          br(),
+            tags$ol(tags$b(
+              tags$li("Use the menu for different topic views."),
+              tags$li(
+                "Click on the      icons in the top right corner of the boxes for more information."
+              ),
+              tags$li("Draw conclusions carefully*")
+            )),
+            br(),
+            "*PsychTopics is designed for exploratory purposes.
+            Topics are derived from scientific publications ", tags$i("automatically"),
+            " using machine learning algorithms.
+            Thus, PsychTopics makes no claim to completeness and cannot replace specific search strategies.",
+            " For more information, click “Methods” on the left."
+            
+            
+          )
           
-          bodyText(
-            tagList(
-              tags$b("Conclusions should be drawn carefully, "),
-              "as topics are derived automatically using machine learning algorithms.
-              PsychTopics makes no claim to completeness and cannot replace specific search strategies."
-            )
-          ),
-          br(),
-          bodyText("For more information, click “Methods” on the left.")
+          
           
           
           # shiny.fluent::Stack(
@@ -151,7 +158,15 @@ mod_start_ui <- function(id){
       style = "margin-bottom: 0",
       makeCard(
         size = 12,
-        title = uiOutput(ns("title_box3")),
+        title = tagList(
+          div(
+            style = "float:right",
+            shiny.fluent::IconButton.shinyInput(inputId = ns("help2"), iconProps = list(iconName = "Info", className = "icon-help-grey"), class = "button-help-grey")
+          ),
+          uiOutput(ns("title_box3"))
+        ),
+          
+          
         content = tagList(
           
           div(
@@ -191,7 +206,13 @@ mod_start_ui <- function(id){
       
       makeCard(
         size = 12,
-        title = "Overall Most Popular Topics in PSYNDEX",
+        title = tagList(
+          div(
+            style = "float:right",
+            shiny.fluent::IconButton.shinyInput(inputId = ns("help3"), iconProps = list(iconName = "Info", className = "icon-help-grey"), class = "button-help-grey")
+          ),
+          "Overall Most Popular Topics in PSYNDEX"
+        ),
         content = tagList(
           
           div(
@@ -223,7 +244,11 @@ mod_start_ui <- function(id){
           #highcharter::highchartOutput(ns("plot_box4"), height = 650)
           #plotOutput(ns("plot_box4"))
         )
-      )
+      ),
+      
+      reactOutput(ns("callout1")),
+      reactOutput(ns("callout2")),
+      reactOutput(ns("callout3"))
       
     )
   )
@@ -238,10 +263,102 @@ mod_start_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    ## Help boxes
+    
+    show1 <- reactiveVal(FALSE)
+    observeEvent(input$help1, show1(!show1()))
+    
+    show2 <- reactiveVal(FALSE)
+    observeEvent(input$help2, show2(!show2()))
+    
+    show3 <- reactiveVal(FALSE)
+    observeEvent(input$help3, show3(!show3()))
+    
+    output$callout1 <- renderReact({
+      if (show1()) {
+        print("callout")
+        
+        Callout(
+          target = glue::glue("#{ns('help1')}"),
+          tags$div(
+            style = "margin: 15px",
+            shiny.fluent::Text(
+              "Throughout PsychTopics, you will find more of these information boxes.",
+              br(),
+              "Click on the icon again to close it."
+            )
+            
+          )
+        )
+      }
+    })
+    
+    output$callout2 <- renderReact({
+      if (show2()) {
+        print("callout")
+        
+        Callout(
+          target = glue::glue("#{ns('help2')}"),
+          tags$div(
+            style = "margin: 15px",
+            shiny.fluent::Text(
+              "These are the - ", tags$b("preliminary"), " - most popular topics in the current year.",
+              br(),
+              br(),
+              "Each topic has a numeric id. See ", tags$i("Browse Topics"), " in the menu for more topic details.",
+              br(),
+              br(),
+              "The larger the bar, the more publications address the topic.",
+              br(),
+              "A publication in counted as addressing a topic, if at least 50% of its contents are related to this topic.",
+              br(),
+              br(),
+              tags$b("Please note: "), " These preliminary topics might change with updates throughout the year,", br(),
+              " since publications of the current year may not be recorded yet.", br(),
+              " Moreover, journals, books, and reports on specific topics may be published in waves (e.g., quarterly issues)."
+            )
+            
+          )
+        )
+      }
+    })
+    
+    output$callout3 <- renderReact({
+      if (show3()) {
+        print("callout")
+        
+        Callout(
+          target = glue::glue("#{ns('help3')}"),
+          tags$div(
+            style = "margin: 15px",
+            shiny.fluent::Text(
+              "These are the most popular topics in PSYNDEX across all years since 1980.",
+              br(),
+              br(),
+              "Each topic has a numeric id. See ", tags$i("Browse Topics"), " in the menu for more details on topics.",
+              br(),
+              br(),
+              "The larger the bar, the more publications address the topic.",
+              br(),
+              br(),
+              "A publication in counted as addressing a topic,", br(),
+              " if at least 50% of its contents are related to this topic."
+            )
+            
+          )
+        )
+      }
+    })
+    
+    
+    
+    
+
+    
     output$last_update = renderUI({
       req(r$last_updated)
 
-      glue::glue("PsychTopics is updated quarterly. Last update: {r$last_updated}")
+      glue::glue("Last update (quarterly): {r$last_updated}")
     })
     # 
     # observeEvent(input$dropdown_most_popular1, {
@@ -363,7 +480,7 @@ mod_start_server <- function(id, r){
       df %>% 
         echarts4r::e_charts(id2, reorder = FALSE) %>% 
         echarts4r::e_bar(Freq, name = "n-docs", bind = tooltip) %>% 
-        echarts4r::e_title(text = "Popular topics overall") %>% 
+        # echarts4r::e_title(text = "Popular topics overall") %>% 
         echarts4r::e_flip_coords() %>% 
         echarts4r::e_x_axis(name = "number of documents", nameLocation = "center", nameGap = 27) %>% 
         echarts4r::e_y_axis(inverse = TRUE) %>% 

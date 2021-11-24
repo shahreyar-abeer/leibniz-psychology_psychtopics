@@ -60,6 +60,38 @@ a {
   transition: background .3s ease;
 }
 
+.button-help-green {
+  background: #c6cf78ff;
+  transition: background .3s ease;
+}
+
+.button-help-grey {
+  background: #e9ecefff;
+  transition: background .3s ease;
+}
+
+.button-help-green:hover {
+  background: #a2b21e;
+  transition: background .3s ease;
+}
+
+.button-help-grey:hover{
+  background: #faf9f8;
+  transition: background .3s ease;
+}
+
+
+
+.icon-help {
+  font-size: 19px;
+}
+
+.icon-help-grey {
+  color: #a19f9d !important;
+  font-size: 19px;
+}
+
+
 .icon-tab2 {
   color: #f3f2f1;
   font-weight: 500;
@@ -287,6 +319,28 @@ a {
     display: grid;
     grid-template-columns: 47.5% 5% 47.5%;
     margin-bottom: 2%;
+  }
+  
+  .two-cols {
+    display: grid;
+    grid-template-columns: 49.25% 1.5% 49.25%;
+    grid-template-areas: "methods-card1 methods-gap methods-card2" "methods-card1 methods-gap methods-card3";
+  }
+  
+  .methods-card1 {
+    grid-area: methods-card1
+  }
+  
+  .methods-card2 {
+    grid-area: methods-card2
+  }
+  
+  .methods-card3 {
+    grid-area: methods-card3
+  }
+  
+  .methods-gap {
+    grid-area: methods-gap
   }
   
   .three-cards {

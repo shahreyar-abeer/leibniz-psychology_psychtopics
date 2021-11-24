@@ -61,7 +61,7 @@ app_server <- function( input, output, session ) {
   mod_popular_by_year_server("popular", r)
   mod_hot_cold_server("hot_cold", r)
   mod_topic_evol_server("topic_evol", r)
-  mod_methods_server("methods")
+  mod_methods_server("methods", r)
   
   router$server(input, output, session)
     
