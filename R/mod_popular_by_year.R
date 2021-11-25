@@ -123,6 +123,17 @@ mod_popular_by_year_server <- function(id, r){
     ## reactiveValues for this mod
     r_mod_pby = reactiveValues()
     
+    
+    observeEvent(r$current_year, {
+      req(r$current_year)
+      
+      shiny.fluent::updateDropdown.shinyInput(
+        inputId = "selected_year",
+        options = lapply(sort(r$start_year:r$current_year, decreasing = TRUE), function(x) list(key = x, text = glue::glue("{x}"))),
+        value = r$current_year
+      )
+    })
+    
     output$box1_text = renderUI({
       req(r$current_year)
       print(class(input$selected_year))
@@ -153,6 +164,7 @@ mod_popular_by_year_server <- function(id, r){
         #dplyr::mutate(Freq = round(Freq * 100, 2)) %>%
         #dplyr::left_join(r$topic, by = c("id" = "Nr..")) %>% 
         dplyr::mutate(
+          search = createLink(TopTerms, r$booster, id),
           id2 = as.factor(id),
           tooltip = glue::glue("{TopTerms}; {input$selected_year};{Label}")
         )
@@ -160,7 +172,7 @@ mod_popular_by_year_server <- function(id, r){
       r_mod_pby$df = df
       
       
-      print(str(df))
+      #print(str(df))
       
       df %>%
         #dplyr::mutate(colors = c(color, rep("red", 4))) %>% 
@@ -194,7 +206,7 @@ mod_popular_by_year_server <- function(id, r){
           ")
         ) %>% 
         echarts4r::e_color(color = color) %>% 
-        echarts4r::e_show_loading() %>% 
+        #echarts4r::e_show_loading() %>% 
         echarts4r::e_legend(show = FALSE)
         #echarts4r::e_highlight(series_index = 0, dataIndex = 2)
         #echarts4r::e_add("itemStyle", colors)
@@ -223,7 +235,7 @@ mod_popular_by_year_server <- function(id, r){
       req(r_mod_pby$df)
       
       r_mod_pby$df %>% 
-        dplyr::select(ID = id2, Label, year, TopTerms, n_docs = Freq, Empirical, Journals) %>% 
+        dplyr::select(ID = id2, Label, year, TopTerms, n_docs = Freq, Empirical, Journals, search) %>% 
         reactable::reactable(
           rownames = FALSE,
           searchable = TRUE,
@@ -240,10 +252,10 @@ mod_popular_by_year_server <- function(id, r){
             # id = reactable::colDef(
             #   name = "ID"
             # ),
-            # search = reactable::colDef(
-            #   name = "Search",
-            #   html = TRUE
-            # ),
+            search = reactable::colDef(
+              name = "Search",
+              html = TRUE
+            ),
             # freq = reactable::colDef(
             #   name = "Prevalence"
             # ),

@@ -70,16 +70,17 @@ mod_topic_evol_ui <- function(id){
               class = "ms-Grid-col ms-sm3 ms-xl3 mod-evol-slider-col2",
               
               ## may need to be changed when https://github.com/Appsilon/shiny.fluent/issues/63 is solved
-              shiny.fluent::Slider(
-                onChange = shiny.fluent::setInput(ns("slider"), 2),
-                ranged = TRUE,
-                label = "Select the range of years",
-                min = 1999,
-                max = 2019,
-                defaultValue = 2019,
-                defaultLowerValue = 2015,
-                snapToStep = TRUE
-              )
+              # shiny.fluent::Slider(
+              #   onChange = shiny.fluent::setInput(ns("slider"), 2),
+              #   ranged = TRUE,
+              #   label = "Select the range of years",
+              #   min = 1999,
+              #   max = 2019,
+              #   defaultValue = 2019,
+              #   defaultLowerValue = 2015,
+              #   snapToStep = TRUE
+              # )
+              uiOutput(ns("slider_input"))
             ),
             div(
               class = "ms-Grid-col ms-sm1 ms-xl1",
@@ -114,6 +115,22 @@ mod_topic_evol_server <- function(id, r){
       upper = NULL
     )
     
+    output$slider_input = renderUI({
+      
+      req(r$current_year, r$start_year)
+      
+      shiny.fluent::Slider(
+        onChange = shiny.fluent::setInput(ns("slider"), 2),
+        ranged = TRUE,
+        label = "Select the range of years",
+        min = r$start_year,
+        max = r$current_year,
+        defaultValue = r$current_year,
+        defaultLowerValue = (r$current_year - 5),
+        snapToStep = TRUE
+      )
+    })
+    
     output$cur_year_text = renderUI({
       req(r$current_year)
       bodyText(glue::glue("For Trends, only records from 1980 to {r$current_year - 1} are included,
@@ -121,7 +138,7 @@ mod_topic_evol_server <- function(id, r){
     })
     
     observeEvent(r$topic, {
-      req(r$topic)
+      req(r$topic, r$current_year)
       
       options_data = data.frame(
         key = r$topic$ID,
@@ -142,7 +159,7 @@ mod_topic_evol_server <- function(id, r){
       )
       
       golem::invoke_js("pickOne", list = list())
-      golem::invoke_js("setSlider", list = list(id = ns("slider"), vals = c(2015, 2019)))
+      golem::invoke_js("setSlider", list = list(id = ns("slider"), vals = c((r$current_year - 5), r$current_year)))
     })
     
     observeEvent(input$slider, {

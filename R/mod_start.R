@@ -456,18 +456,18 @@ mod_start_server <- function(id, r){
       
 
 
-      df = d1 %>%
+      df = r$topic %>%
         #dplyr::filter(year == 2019) %>%
         #dplyr::arrange(-Freq) %>%
         #dplyr::slice_head(n = top) %>%
         #dplyr::mutate(Freq = round(Freq * 100, 2)) %>%
-        dplyr::left_join(r$topic, by = c("id" = "ID")) %>%
+        #dplyr::left_join(r$topic, by = c("id" = "ID")) %>%
         #tibble::glimpse(.) %>% 
-        dplyr::arrange(-Freq) %>% 
+        dplyr::arrange(-n_docs) %>% 
         dplyr::slice_head(n = top) %>% 
         #tibble::glimpse(.) %>% 
         dplyr::mutate(
-          id2 = as.factor(id),
+          id2 = as.factor(ID),
           tooltip = glue::glue("{TopTerms};{Label}"),
         )
       
@@ -479,7 +479,7 @@ mod_start_server <- function(id, r){
       
       df %>% 
         echarts4r::e_charts(id2, reorder = FALSE) %>% 
-        echarts4r::e_bar(Freq, name = "n-docs", bind = tooltip) %>% 
+        echarts4r::e_bar(n_docs, name = "n-docs", bind = tooltip) %>% 
         # echarts4r::e_title(text = "Popular topics overall") %>% 
         echarts4r::e_flip_coords() %>% 
         echarts4r::e_x_axis(name = "number of documents", nameLocation = "center", nameGap = 27) %>% 

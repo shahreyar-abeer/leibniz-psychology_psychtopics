@@ -51,9 +51,12 @@ app_server <- function( input, output, session ) {
 
   
   
-  ## update these two lines by hand
+  ## update the following line by hand
   r$last_updated = "18th Oct, 2021"
+  
+  ## ---
   r$current_year = isolate(max(r$years))
+  r$start_year = isolate(min(r$years))
   
   
   mod_start_server("start", r)
