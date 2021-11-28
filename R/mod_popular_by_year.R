@@ -12,7 +12,7 @@ mod_popular_by_year_ui <- function(id){
   tagList(
     
     div(
-      class = "two-cards",
+      class = "two-cards-25-75",
       
       makeCard(
         title = "Popular PSYNDEX Topics by Year",
@@ -25,11 +25,11 @@ mod_popular_by_year_ui <- function(id){
           br(),
           shiny.fluent::Stack(
             horizontal = TRUE,
+            # div(
+            #   class = glue("ms-Grid-col ms-sm{4} ms-xl{4}"),
+            # ),
             div(
-              class = glue("ms-Grid-col ms-sm{4} ms-xl{4}"),
-            ),
-            div(
-              class = glue("ms-Grid-col ms-sm{4} ms-xl{4}"),
+              class = glue("ms-Grid-col ms-sm{12} ms-xl{12}"),
               style = "text-align: center",
               shiny.fluent::Dropdown.shinyInput(
                 inputId = ns("selected_year"),

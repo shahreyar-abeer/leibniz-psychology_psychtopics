@@ -211,6 +211,13 @@ a {
     margin-bottom: 20px;
   }
   
+  .two-cards-25-75 {
+    display: grid;
+    grid-template-columns: 100%;
+    row-gap: 10px;
+    margin-bottom: 20px;
+  }
+  
   .three-cards {
     display: grid;
     grid-template-columns: 100%;
@@ -321,6 +328,13 @@ a {
     margin-bottom: 2%;
   }
   
+  .two-cards-25-75 {
+    display: grid;
+    grid-template-columns: 33% 5% 62%;
+    row-gap: 10px;
+    margin-bottom: 20px;
+  }
+  
   .two-cols {
     display: grid;
     grid-template-columns: 49.25% 1.5% 49.25%;
@@ -398,6 +412,12 @@ a {
     margin-bottom: 1.7%;
   }
   
+  .two-cards-25-75 {
+    display: grid;
+    grid-template-columns: 32% 3% 65%;
+    margin-bottom: 1.7%;
+  }
+  
   .three-cards {
     display: grid;
     grid-template-columns: 32% 2% 32% 2% 32%;
@@ -432,6 +452,12 @@ a {
   .two-cards {
     display: grid;
     grid-template-columns: 49.2% 1.6% 49.2%;
+    margin-bottom: 1.7%;
+  }
+  
+  .two-cards-25-75 {
+    display: grid;
+    grid-template-columns: 34.2% 1.6% 64.2%;
     margin-bottom: 1.7%;
   }
   

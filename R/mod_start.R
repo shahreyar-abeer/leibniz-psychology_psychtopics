@@ -87,11 +87,24 @@ mod_start_ui <- function(id){
       makeCard(
         size = 12,
         title = tagList(
-          "How To Use PsychTopics",
           div(
             style = "float:right",
-            shiny.fluent::IconButton.shinyInput(inputId = ns("help1"), iconProps = list(iconName = "Info", className = "icon-help"), class = "button-help-green")
-          )
+            shiny.fluent::TooltipHost(
+              delay = 0,
+              content = div(
+                style = "margin: 13px",
+                shiny.fluent::Text(
+                  "Throughout PsychTopics, you will find more of these information boxes.",
+                  br(),
+                  "Hovering over the ", tags$i("info buttons"),
+                  #shiny.fluent::Icon(iconName = "Info"),
+                  " should open the box."
+                )
+              ),
+              shiny.fluent::IconButton.shinyInput(inputId = ns("help1"), iconProps = list(iconName = "Info", className = "icon-help"), class = "button-help-green")
+            )
+          ),
+          "How To Use PsychTopics"
         ),
         style = "background-color: #c6cf78ff",
         content = tagList(
@@ -115,38 +128,6 @@ mod_start_ui <- function(id){
             
           )
           
-          
-          
-          
-          # shiny.fluent::Stack(
-          #   horizontal = TRUE,
-          #   div(class = "ms-Grid-col ms-sm2 ms-xl2"),
-          #   div(
-          #     class = "ms-Grid-col ms-sm4 ms-xl4",
-          #     shiny.fluent::PrimaryButton.shinyInput(
-          #       inputId = ns("begin_tutorial"),
-          #       text = "Begin Tutorial",
-          #       className = "buttons-tab2",
-          #       iconProps = list("iconName" = "Education", className = "icon-tab2")
-          #       #onRenderIcon = shiny.fluent::JS("() => {return <i className='fas fa-plus'></i>}")
-          #     ),
-          #   ),
-          #   div(
-          #     class = "ms-Grid-col ms-sm4 ms-xl4",
-          #     shiny.fluent::PrimaryButton.shinyInput(
-          #       inputId = ns("github"),
-          #       text = "Github",
-          #       className = "buttons-tab2",
-          #       iconProps = list("iconName" = "Link", className = "icon-tab2")
-          #       #onRenderIcon = shiny.fluent::JS("() => {return <i className='fas fa-plus'></i>}")
-          #     ),
-          #   )
-          # ),
-          
-
-
-          # tags$iframe(width = "100%", height = "400px", src = "https://zpid.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=b4408d9e-68ee-4a17-933b-ac1a0094197d",
-          #             frameborder = "0", allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture", allowfullscreen = TRUE)
         )
       )
     ),
@@ -158,14 +139,30 @@ mod_start_ui <- function(id){
       style = "margin-bottom: 0",
       makeCard(
         size = 12,
-        title = tagList(
-          div(
-            style = "float:right",
-            shiny.fluent::IconButton.shinyInput(inputId = ns("help2"), iconProps = list(iconName = "Info", className = "icon-help-grey"), class = "button-help-grey")
-          ),
-          uiOutput(ns("title_box3"))
+        
+        title = title_with_help(
+          id = ns("help2"),
+          title = uiOutput(ns("title_box3")),
+          content = tagList(
+            shiny.fluent::Text(
+              "These are the - ", tags$b("preliminary"), " - most popular topics in the current year.",
+              br(),
+              br(),
+              "Each topic has a numeric id. See ", tags$i("Browse Topics"), " in the menu for more topic details.",
+              br(),
+              br(),
+              "The larger the bar, the more publications address the topic.",
+              br(),
+              "A publication in counted as addressing a topic, if at least 50% of its contents are related to this topic.",
+              br(),
+              br(),
+              tags$b("Please note: "), " These preliminary topics might change with updates throughout the year,", br(),
+              " since publications of the current year may not be recorded yet.", br(),
+              " Moreover, journals, books, and reports on specific topics may be published in waves (e.g., quarterly issues)."
+            )
+            
+          )
         ),
-          
           
         content = tagList(
           
@@ -206,13 +203,34 @@ mod_start_ui <- function(id){
       
       makeCard(
         size = 12,
-        title = tagList(
-          div(
-            style = "float:right",
-            shiny.fluent::IconButton.shinyInput(inputId = ns("help3"), iconProps = list(iconName = "Info", className = "icon-help-grey"), class = "button-help-grey")
-          ),
-          "Overall Most Popular Topics in PSYNDEX"
+        title = title_with_help(
+          id = ns("help3"),
+          title = "Overall Most Popular Topics in PSYNDEX2",
+          content = tagList(
+            shiny.fluent::Text(
+              "These are the most popular topics in PSYNDEX across all years since 1980.",
+              br(),
+              br(),
+              "Each topic has a numeric id. See ", tags$i("Browse Topics"), " in the menu for more details on topics.",
+              br(),
+              br(),
+              "The larger the bar, the more publications address the topic.",
+              br(),
+              br(),
+              "A publication in counted as addressing a topic,", br(),
+              " if at least 50% of its contents are related to this topic."
+            )
+          )
         ),
+          
+        #   
+        #   tagList(
+        #   div(
+        #     style = "float:right",
+        #     shiny.fluent::IconButton.shinyInput(inputId = ns("help3"), iconProps = list(iconName = "Info", className = "icon-help-grey"), class = "button-help-grey")
+        #   ),
+        #   "Overall Most Popular Topics in PSYNDEX"
+        # ),
         content = tagList(
           
           div(
@@ -244,11 +262,7 @@ mod_start_ui <- function(id){
           #highcharter::highchartOutput(ns("plot_box4"), height = 650)
           #plotOutput(ns("plot_box4"))
         )
-      ),
-      
-      reactOutput(ns("callout1")),
-      reactOutput(ns("callout2")),
-      reactOutput(ns("callout3"))
+      )
       
     )
   )
@@ -262,98 +276,6 @@ mod_start_ui <- function(id){
 mod_start_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    
-    ## Help boxes
-    
-    show1 <- reactiveVal(FALSE)
-    observeEvent(input$help1, show1(!show1()))
-    
-    show2 <- reactiveVal(FALSE)
-    observeEvent(input$help2, show2(!show2()))
-    
-    show3 <- reactiveVal(FALSE)
-    observeEvent(input$help3, show3(!show3()))
-    
-    output$callout1 <- renderReact({
-      if (show1()) {
-        print("callout")
-        
-        Callout(
-          target = glue::glue("#{ns('help1')}"),
-          tags$div(
-            style = "margin: 15px",
-            shiny.fluent::Text(
-              "Throughout PsychTopics, you will find more of these information boxes.",
-              br(),
-              "Click on the icon again to close it."
-            )
-            
-          )
-        )
-      }
-    })
-    
-    output$callout2 <- renderReact({
-      if (show2()) {
-        print("callout")
-        
-        Callout(
-          target = glue::glue("#{ns('help2')}"),
-          tags$div(
-            style = "margin: 15px",
-            shiny.fluent::Text(
-              "These are the - ", tags$b("preliminary"), " - most popular topics in the current year.",
-              br(),
-              br(),
-              "Each topic has a numeric id. See ", tags$i("Browse Topics"), " in the menu for more topic details.",
-              br(),
-              br(),
-              "The larger the bar, the more publications address the topic.",
-              br(),
-              "A publication in counted as addressing a topic, if at least 50% of its contents are related to this topic.",
-              br(),
-              br(),
-              tags$b("Please note: "), " These preliminary topics might change with updates throughout the year,", br(),
-              " since publications of the current year may not be recorded yet.", br(),
-              " Moreover, journals, books, and reports on specific topics may be published in waves (e.g., quarterly issues)."
-            )
-            
-          )
-        )
-      }
-    })
-    
-    output$callout3 <- renderReact({
-      if (show3()) {
-        print("callout")
-        
-        Callout(
-          target = glue::glue("#{ns('help3')}"),
-          tags$div(
-            style = "margin: 15px",
-            shiny.fluent::Text(
-              "These are the most popular topics in PSYNDEX across all years since 1980.",
-              br(),
-              br(),
-              "Each topic has a numeric id. See ", tags$i("Browse Topics"), " in the menu for more details on topics.",
-              br(),
-              br(),
-              "The larger the bar, the more publications address the topic.",
-              br(),
-              br(),
-              "A publication in counted as addressing a topic,", br(),
-              " if at least 50% of its contents are related to this topic."
-            )
-            
-          )
-        )
-      }
-    })
-    
-    
-    
-    
-
     
     output$last_update = renderUI({
       req(r$last_updated)
