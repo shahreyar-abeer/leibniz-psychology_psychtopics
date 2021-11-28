@@ -31,7 +31,16 @@ mod_browse_topics_ui <- function(id){
       div(),
       
       makeCard(
-        title = "Topic Trends",
+        title = title_with_help(
+          id = ns("help2"),
+          title = "Topic Trends",
+          content = tagList(
+            shiny.fluent::Text(
+              "A topic's ", tags$b("number of documents"), " is determined by counting all publications that mainly address
+              the topic (i.e., at least 50% of a publications' content is related to the topic)."
+            )
+          )
+        ),
         size = 12,
         content = tagList(
           echarts4r::echarts4rOutput(ns("plot_box2")),
@@ -51,7 +60,22 @@ mod_browse_topics_ui <- function(id){
       div(),
       
       makeCard(
-        title = "Share of Empirical Research",
+        title = title_with_help(
+          id = ns("help3"),
+          title = "Share of Empirical Research",
+          content = tagList(
+            shiny.fluent::Text(
+              "The share of empirical research is the relative frequency of topic-related publications
+              with a empirical study methodology.",
+              br(),
+              br(),
+              "Some topics may address theoretical issues or conceptual work.
+              Some topics might be characterized by a large share of empirical research.
+              And some topics might shift from mostly theoretical publications in its early years
+              to an increasing investigation of empirical evidence."
+            )
+          )
+        ),
         size = 12,
         content = tagList(
           
@@ -74,7 +98,34 @@ mod_browse_topics_ui <- function(id){
       class = "one-card",
       style = "margin-bottom: 0",
       makeCard(
-        title = "Topic Details",
+        title = title_with_help(
+          id = ns("help2"),
+          title = "Topic Details",
+          content = tagList(
+            shiny.fluent::Text(
+              "The topics are sorted in decreasing order according to the number of associated papers.",
+              br(),
+              br(),
+              "Basically, a topic is a group of words that are frequently used together in publications ",
+              tags$b("(= top terms)"), ". These terms are found automatically by the algorithm.
+              For better interpretation, the PsychTopics team formulated topic ", tags$b("labels."),
+              br(),
+              br(),
+              "The ", tags$b("number of documents"), " across all years is determined by counting all publications
+              that mainly address the topic (i.e., at least 50% of a publications’ content is related to the topic).",
+              br(),
+              br(),
+              "The share of ", tags$b("empirical research"), " is the relative frequency of these publications with a empirical study methodology.",
+              br(),
+              br(),
+              "The ", tags$b("journals"), " column shows the three most frequent journals that publish articles related to the topic.",
+              br(),
+              br(),
+              "With ", tags$b("Search PSYNDEX"), ", you can explore topic-related articles in PubPsych.eu.
+              The search query is generated from the top terms."
+            )
+          )
+        ),
         size = 12,
         content = tagList(
           reactable::reactableOutput(ns("topics_table"))
