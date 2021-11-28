@@ -211,7 +211,7 @@ a {
     margin-bottom: 20px;
   }
   
-  .two-cards-25-75 {
+  .two-cards-33-66 {
     display: grid;
     grid-template-columns: 100%;
     row-gap: 10px;
@@ -328,7 +328,7 @@ a {
     margin-bottom: 2%;
   }
   
-  .two-cards-25-75 {
+  .two-cards-33-66 {
     display: grid;
     grid-template-columns: 33% 5% 62%;
     row-gap: 10px;
@@ -412,7 +412,7 @@ a {
     margin-bottom: 1.7%;
   }
   
-  .two-cards-25-75 {
+  .two-cards-33-66 {
     display: grid;
     grid-template-columns: 32% 3% 65%;
     margin-bottom: 1.7%;
@@ -455,7 +455,7 @@ a {
     margin-bottom: 1.7%;
   }
   
-  .two-cards-25-75 {
+  .two-cards-33-66 {
     display: grid;
     grid-template-columns: 34.2% 1.6% 64.2%;
     margin-bottom: 1.7%;
