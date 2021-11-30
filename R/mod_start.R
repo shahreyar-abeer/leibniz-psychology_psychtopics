@@ -42,13 +42,16 @@ mod_start_ui <- function(id){
               "How to cite: ",
               shiny.fluent::TooltipHost(
                 content = tagList(
-                  shiny.fluent::Text("Bittermann, A. (2019). Development of a user-friendly app for exploring and analyzing research topics in psychology.",
-                                     br(),
-                                     "In G. Catalano, C. Daraio, M. Gregori, H. F. Moed & G. Ruocco (Eds.), Proceedings of the 17th Conference of the International Society for Scientometrics and Informetrics (2634–2635).",
-                                     br(),
-                                     "Rome: Edizioni Efesto."),
-                  br(),
-                  tags$a("http://dx.doi.org/10.23668/psycharchives.2521", href = "http://dx.doi.org/10.23668/psycharchives.2521", target = "_blank")
+                  tags$div(
+                    style = "margin: 11px",
+                    shiny.fluent::Text("Bittermann, A. (2019). Development of a user-friendly app for exploring and analyzing research topics in psychology.",
+                                       br(),
+                                       "In G. Catalano, C. Daraio, M. Gregori, H. F. Moed & G. Ruocco (Eds.), Proceedings of the 17th Conference of the International Society for Scientometrics and Informetrics (2634–2635).",
+                                       br(),
+                                       "Rome: Edizioni Efesto."),
+                    br(),
+                    tags$a("http://dx.doi.org/10.23668/psycharchives.2521", href = "http://dx.doi.org/10.23668/psycharchives.2521", target = "_blank")
+                  )
                 ),
                 delay = 0,
                 tags$a("Bittermann (2019)")
@@ -205,7 +208,7 @@ mod_start_ui <- function(id){
         size = 12,
         title = title_with_help(
           id = ns("help3"),
-          title = "Overall Most Popular Topics in PSYNDEX2",
+          title = "Overall Most Popular Topics in PSYNDEX",
           content = tagList(
             shiny.fluent::Text(
               "These are the most popular topics in PSYNDEX across all years since 1980.",

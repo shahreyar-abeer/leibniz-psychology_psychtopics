@@ -47,7 +47,17 @@ mod_topic_evol_ui <- function(id){
       div(),
       
       makeCard(
-        title = uiOutput(ns("title_box2")),
+        title = title_with_help(
+          id = ns("help2"),
+          title = uiOutput(ns("title_box2")),
+          content = tagList(
+            shiny.fluent::Text(
+              "A topic's ", tags$b("number of documents"),
+              " is determined by counting all publications that mainly address the topic 
+              (i.e., at least 50% of a publications’ content is related to the topic)."
+            )
+          )
+        ),
         size = 12,
         content = tagList(
           echarts4r::echarts4rOutput(ns("plot"))
@@ -58,7 +68,21 @@ mod_topic_evol_ui <- function(id){
     div(
       class = "one-card",
       makeCard(
-        title = uiOutput(ns("title_box3")),
+        title = title_with_help(
+          id = ns("help3"),
+          title = uiOutput(ns("title_box3")),
+          content = tagList(
+            shiny.fluent::Text(
+              "Basically, a topic is a group of words that are frequently used together in publications.
+              These word groups are found automatically by the algorithm.",
+              br(), br(),
+              "This table shows the ", tags$b("ten most characterizing words of the topic"),
+              " (sorted from top to bottom), and how they change over years.",
+              br(), br(),
+              "The underlying topic identification method adds new documents every year, letting the topics evolve over time."
+            )
+          )
+        ),
         size = 12,
         content = tagList(
           
@@ -134,7 +158,7 @@ mod_topic_evol_server <- function(id, r){
     output$cur_year_text = renderUI({
       req(r$current_year)
       bodyText(glue::glue("For Trends, only records from 1980 to {r$current_year - 1} are included,
-               since publications of the {r$current_year} are not yet fully covered. "))
+               since publications of the current year may not be fully covered yet."))
     })
     
     observeEvent(r$topic, {
@@ -300,7 +324,7 @@ mod_topic_evol_server <- function(id, r){
                       '<br/> Label: ' + vals[2] + 
                       '<br/> N docs: ' + params.value[1]) +
                       '<br/> Year: ' + params.value[0] + 
-                      '<br/> Topic: ' + vals[0]
+                      '<br/> Overall top terms: ' + vals[0]
                       }
           ")
         )

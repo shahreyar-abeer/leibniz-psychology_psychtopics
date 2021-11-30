@@ -62,7 +62,24 @@ mod_popular_by_year_ui <- function(id){
       div(),
       
       makeCard(
-        title = "Topic Trends",
+        title = title_with_help(
+          id = ns("help2"),
+          title = uiOutput(ns("title_box2")),
+          content = tagList(
+            shiny.fluent::Text(
+              "These are the most popular topics in PSYNDEX in the selected year.",
+              br(),
+              br(),
+              "Each topic has a numeric id. See the table below for more topic details.",
+              br(),
+              br(),
+              "The larger the bar, the more publications address the topic.",
+              br(),
+              br(),
+              "A publication in counted as addressing a topic, if at least 50% of its contents are related to this topic."
+            )
+          )
+        ),
         size = 12,
         content = tagList(
           
@@ -91,7 +108,7 @@ mod_popular_by_year_ui <- function(id){
             )
           ),
           
-          echarts4r::echarts4rOutput(ns("plot_box2"), height = 550)
+          echarts4r::echarts4rOutput(ns("plot_box2"), height = 430)
         )
       )
     ),
@@ -100,7 +117,34 @@ mod_popular_by_year_ui <- function(id){
       class = "one-card",
       style = "margin-bottom: 0",
       makeCard(
-        title = "Topic Details",
+        title = title_with_help(
+          id = ns("help3"),
+          title = uiOutput(ns("title_box3")),
+          content = tagList(
+            shiny.fluent::Text(
+              "The topics are sorted in decreasing order according to the number of associated papers.",
+              br(),
+              br(),
+              "Basically, a topic is a group of words that are frequently used together in publications ",
+              tags$b("(= top terms)"), ". These terms are found automatically by the algorithm.
+              For better interpretation, the PsychTopics team formulated topic ", tags$b("labels."),
+              br(),
+              br(),
+              "The ", tags$b("number of documents"), " across all years is determined by counting all publications
+              that mainly address the topic (i.e., at least 50% of a publications’ content is related to the topic).",
+              br(),
+              br(),
+              "The share of ", tags$b("empirical research"), " is the relative frequency of these publications with a empirical study methodology.",
+              br(),
+              br(),
+              "The ", tags$b("journals"), " column shows the three most frequent journals that publish articles related to the topic.",
+              br(),
+              br(),
+              "With ", tags$b("Search PSYNDEX"), ", you can explore topic-related articles in PubPsych.eu.
+              The search query is generated from the top terms."
+            )
+          )
+        ),
         size = 12,
         content = tagList(
           reactable::reactableOutput(ns("topics_table"))
@@ -122,6 +166,18 @@ mod_popular_by_year_server <- function(id, r){
     
     ## reactiveValues for this mod
     r_mod_pby = reactiveValues()
+    
+    output$title_box2 = renderUI({
+      req(input$selected_year)
+      #x = 2019
+      glue::glue("Popular Topics of {input$selected_year}")
+    })
+    
+    output$title_box3 = renderUI({
+      req(r$current_year)
+      #x = 2019
+      glue::glue("Details for Popular Topics {input$selected_year}")
+    })
     
     
     observeEvent(r$current_year, {
@@ -178,7 +234,7 @@ mod_popular_by_year_server <- function(id, r){
         #dplyr::mutate(colors = c(color, rep("red", 4))) %>% 
         echarts4r::e_charts(id2) %>% 
         echarts4r::e_bar(Freq, name = "N docs", bind = tooltip, selectedMode = TRUE, select = list(itemStyle = list(color = "#241b3e"))) %>% 
-        echarts4r::e_title(text = glue::glue("Popular topics in {input$selected_year}")) %>% 
+        #echarts4r::e_title(text = glue::glue("Popular topics in {input$selected_year}")) %>% 
         echarts4r::e_flip_coords() %>% 
         echarts4r::e_x_axis(name = "number of documents", nameLocation = "center", nameGap = 27) %>% 
         echarts4r::e_y_axis(name = "ID", nameLocation = "center", nameRotate = 0, nameGap = 35, inverse = TRUE) %>% 

@@ -71,7 +71,19 @@ mod_hot_cold_ui <- function(id){
       div(),
       
       makeCard(
-        title = uiOutput(ns("title_box2")),
+        title = title_with_help(
+          id = ns("help2"),
+          title = uiOutput(ns("title_box2")),
+          content = tagList(
+            shiny.fluent::Text(
+              "Hot topics show the strongest ", tags$b("increase in publications"), " during the specified time span.",
+              br(), br(),
+              "The top three hot topics are shown by default. You can add more topics from the table below.",
+              br(), br(),
+              "The increase is determined using slopes of a linear regression model."
+            )
+          )
+        ),
         size = 12,
         content = tagList(
           echarts4r::echarts4rOutput(ns("hot_plot")),
@@ -89,7 +101,19 @@ mod_hot_cold_ui <- function(id){
       div(),
       
       makeCard(
-        title = uiOutput(ns("title_box3")),
+        title = title_with_help(
+          id = ns("help3"),
+          title = uiOutput(ns("title_box3")),
+          content = tagList(
+            shiny.fluent::Text(
+              "Cold topics show the strongest ", tags$b("decrease in publications"), " during the specified time span.",
+              br(), br(),
+              "The top three cold topics are shown by default. You can add more topics from the table below.",
+              br(), br(),
+              "The decrease is determined using slopes of a linear regression model."
+            )
+          )
+        ),
         size = 12,
         content = tagList(
           tagList(
@@ -112,7 +136,18 @@ mod_hot_cold_ui <- function(id){
       class = "two-cards",
       style = "margin-bottom: 0",
       makeCard(
-        title = uiOutput(ns("title_box4")),
+        title = title_with_help(
+          id = ns("help4"),
+          title = uiOutput(ns("title_box4")),
+          content = tagList(
+            shiny.fluent::Text(
+              "The topics are sorted by their linear trend (highest increase at the top).",
+              br(), br(),
+              "With ", tags$b("Search PSYNDEX"), ", you can explore topic-related articles in PubPsych.eu.
+              The search query is generated from the top terms."
+            )
+          )
+        ),
         size = 12,
         content = tagList(
           tagList(
@@ -124,7 +159,18 @@ mod_hot_cold_ui <- function(id){
       div(),
       
       makeCard(
-        title = uiOutput(ns("title_box5")),
+        title = title_with_help(
+          id = ns("help5"),
+          title = uiOutput(ns("title_box5")),
+          content = tagList(
+            shiny.fluent::Text(
+              "The topics are sorted by their linear trend (highest decrease at the top).",
+              br(), br(),
+              "With ", tags$b("Search PSYNDEX"), ", you can explore topic-related articles in PubPsych.eu.
+              The search query is generated from the top terms."
+            )
+          )
+        ),
         size = 12,
         content = tagList(
           tagList(
@@ -170,7 +216,7 @@ mod_hot_cold_server <- function(id, r){
     output$cur_year_text = renderUI({
       req(r$current_year)
       bodyText(glue::glue("For Trends, only records from 1980 to {r$current_year - 1} are included,
-               since publications of the {r$current_year} are not yet fully covered. "))
+               since publications of the current year may not be fully covered yet."))
     })
     
     observeEvent(r$current_year, {

@@ -74,16 +74,19 @@ mod_methods_ui <- function(id){
                   "Remove ",
                   shiny.fluent::TooltipHost(
                     content = tagList(
-                      shiny.fluent::Text(
-                        "Besides standard stopwords of the quanteda R package, we used:",
-                        br(),
-                        tags$ul(
-                          tags$li("Christ et al. (2019): ", tags$a("http://dx.doi.org/10.23668/psycharchives.2613", href = "http://dx.doi.org/10.23668/psycharchives.2613", target = "_blank")),
-                          tags$li("Bittermann & Klos (2019): "), tags$a("http://dx.doi.org/10.23668/psycharchives.2499", href = "http://dx.doi.org/10.23668/psycharchives.2499", target = "_blank")
-                        ),
-                        br(),
-                        "The German stopwords by Bittermann & Klos were translated using DeepL (", tags$a("https://www.deepl.com/translator", href = "https://www.deepl.com/translator", target = "_blank"), ")"
-                        
+                      tags$div(
+                        style = "margin: 9px",
+                        shiny.fluent::Text(
+                          "Besides standard stopwords of the quanteda R package, we used:",
+                          br(),
+                          tags$ul(
+                            tags$li("Christ et al. (2019): ", tags$a("http://dx.doi.org/10.23668/psycharchives.2613", href = "http://dx.doi.org/10.23668/psycharchives.2613", target = "_blank")),
+                            tags$li("Bittermann & Klos (2019): "), tags$a("http://dx.doi.org/10.23668/psycharchives.2499", href = "http://dx.doi.org/10.23668/psycharchives.2499", target = "_blank")
+                          ),
+                          br(),
+                          "The German stopwords by Bittermann & Klos were translated using DeepL (", tags$a("https://www.deepl.com/translator", href = "https://www.deepl.com/translator", target = "_blank"), ")"
+                          
+                        )
                       )
                     ),
                     delay = 0,
@@ -115,7 +118,7 @@ mod_methods_ui <- function(id){
             ),
             
             br(),
-            bodyText(tags$a("A research paper with more details on the development of PsychTopics is in preparation."))
+            bodyText(tags$a(tags$b("A research paper with more details on the development of PsychTopics is in preparation.")))
             
             
           )  ## end tagList
