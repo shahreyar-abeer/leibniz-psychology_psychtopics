@@ -153,10 +153,45 @@ mod_browse_topics_server <- function(id, r){
       )
     })
     
+    ## the data for the table
     topic = reactive({
+      
+      # make_tooltip = function(topic_evo_string) {
+      #   
+      #   text_to_display = stringr::str_split(topic_evo_string, " \n ")[[1]][1]
+      #   
+      #   shiny.fluent::TooltipHost(
+      #     content = topic_evo_string,
+      #     delay = 0,
+      #     HTML(text_to_display)
+      #   ) %>% as.character()
+      # }
+      
+      req(r$topic_evo)
+      
+      make_topic_evo_string = function(each) {
+        #years = attributes(each)$dimnames[[2]]
+        
+        each = as.data.frame(each)
+        
+        years = names(each)
+        
+        get_all_strings = function(year) {
+          strings = glue::glue_collapse(each[[year]], sep = ", ")
+          glue::glue("{year}: {strings}")
+        }
+        
+        all_strings = sapply(years, get_all_strings)
+        glue::glue_collapse(all_strings, sep = " \n ")
+        
+      }
+      
+      topics = sapply(r$topic_evo, make_topic_evo_string)
+      
       r$topic %>% 
         dplyr::mutate(
-          search = createLink(TopTerms, r$booster, ID)
+          search = createLink(TopTerms, r$booster, ID),
+          topic_evo = topics
         ) %>% 
         dplyr::arrange(-n_docs)
     })
@@ -282,6 +317,67 @@ mod_browse_topics_server <- function(id, r){
             ),
             Empirical = reactable::colDef(
               format = reactable::colFormat(digits = 2)
+            ),
+            topic_evo = reactable::colDef(
+              show = TRUE,
+              html = TRUE,
+              
+              cell = htmlwidgets::JS('
+                function(cellInfo, state) {
+                  // input:
+                  //  - cellInfo, an object containing cell info
+                  //  - state, an object containing the table state (optional, new in v0.2.3.9000)
+                  //
+                  // output:
+                  //  - content to render (e.g. an HTML string)
+                  all_years = cellInfo.value.split(" \\n ")
+                  n = all_years.length - 1
+                  // console.log(y2)
+                  
+                  if (!state.searchValue) {
+                    show = all_years[n]
+                  } else {
+                    x = all_years.filter(s => s.includes(state.searchValue))
+                    if (x.length == 0) {
+                      show = "No match"
+                    } else if (x.length == 1) {
+                      show = x
+                    } else if (x.length > 1) {
+                      show = x[(x.length - 1)]
+                    }
+                  }
+                
+                  x1 = `<div class=\\"react-container\\">
+                          <script class=\\"react-data\\" type=\\"application/json\\">{\\"type\\":\\"element\\",\\"module\\":\\"@fluentui/react\\",\\"name\\":\\"TooltipHost\\",\\"props\\":{\\"type\\":\\"object\\",\\"value\\":{\\"content\\":{\\"type\\":\\"raw\\",\\"value\\":` + `"` + all_years + `"` + `},\\"delay\\":{\\"type\\":\\"raw\\",\\"value\\":0},\\"children\\":{\\"type\\":\\"element\\",\\"module\\":\\"@fluentui/react\\",\\"name\\":\\"Text\\",\\"props\\":{\\"type\\":\\"raw\\",\\"value\\":{\\"children\\":` + `"` + show + `"` + `}}}}}}</script>
+                          <script>jsmodule["@/shiny.react"].findAndRenderReactData()</script>
+                        </div>`
+                  // console.log(typeof x1)
+                  console.log(show)
+                
+                  return show
+                
+                }
+              '),
+              
+              
+              # cell = reactable::JS(
+              #   'function(value) {
+              #     console.log(value);
+              #     if (value) {
+              #       valueArray = value.split(" \n ");
+              #       console.log(valueArray);
+              #       searched = $("#browse-topics_table .rt-search").val();
+              #       console.log(searched);
+              #       x = valueArray.findIndex(s => s.includes(searched));
+              #       return x;
+              #     } else {
+              #       return "this is a cell";
+              #     }
+              #   
+              # 
+              #   }'
+              # )
+              #style = "overflow: hidden"
             ),
             # freq = reactable::colDef(
             #   name = "Prevalence"
