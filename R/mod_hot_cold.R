@@ -19,7 +19,7 @@ mod_hot_cold_ui <- function(id){
         style = "background-color: #c6cf78ff",
         content = tagList(
           
-          bodyText("Hot topics show the highest increase in topic prevalence over the years,
+          bodyText("Hot topics show the highest increase in number of publications over the years,
                    while cold topics are characterized by a decrease."),
           br(),
           br(),
@@ -206,8 +206,8 @@ mod_hot_cold_server <- function(id, r){
         ranged = TRUE,
         label = "Select the range of years",
         min = r$start_year,
-        max = r$current_year,
-        defaultValue = r$current_year,
+        max = r$current_year-1,
+        defaultValue = r$current_year-1,
         defaultLowerValue = (r$current_year - 5),
         snapToStep = TRUE
       )
@@ -220,7 +220,7 @@ mod_hot_cold_server <- function(id, r){
     })
     
     observeEvent(r$current_year, {
-      golem::invoke_js("setSlider", list = list(id = ns("slider"), vals = c((r$current_year - 5), r$current_year)))
+      golem::invoke_js("setSlider", list = list(id = ns("slider"), vals = c((r$current_year - 5), r$current_year-1)))
     })
     
     observeEvent(input$slider, {
@@ -327,7 +327,7 @@ mod_hot_cold_server <- function(id, r){
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(value, bind = tooltip) %>% 
         echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, axisPointer = list(snap = TRUE)) %>% 
-        echarts4r::e_y_axis(name = "number of documents", nameLocation = "center", nameGap = 30) %>% 
+        echarts4r::e_y_axis(name = "essential publications", nameLocation = "center", nameGap = 30) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
           appendToBody = TRUE,
@@ -338,9 +338,9 @@ mod_hot_cold_server <- function(id, r){
               var vals = params.name.split(';');
               return('ID: ' + vals[1] +
                       '<br/> Label: ' + vals[2] + 
-                      '<br/> N docs: ' + params.value[1]) +
+                      '<br/> Essential Publications: ' + params.value[1]) +
                       '<br/> Year: ' + params.value[0] +
-                      '<br/> Topic: ' + vals[0]
+                      '<br/> Top Terms: ' + vals[0]
                       }
           ")
         )
@@ -367,7 +367,7 @@ mod_hot_cold_server <- function(id, r){
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(value, bind = tooltip) %>% 
         echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, axisPointer = list(snap = TRUE)) %>% 
-        echarts4r::e_y_axis(name = "number of documents", nameLocation = "center", nameGap = 30) %>% 
+        echarts4r::e_y_axis(name = "essential publications", nameLocation = "center", nameGap = 30) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
           appendToBody = TRUE,
@@ -378,9 +378,9 @@ mod_hot_cold_server <- function(id, r){
               var vals = params.name.split(';');
               return('ID: ' + vals[1] +
                       '<br/> Label: ' + vals[2] + 
-                      '<br/> N docs: ' + params.value[1]) +
+                      '<br/> Essential Publications: ' + params.value[1]) +
                       '<br/> Year: ' + params.value[0] +
-                      '<br/> Topic: ' + vals[0]
+                      '<br/> Top Terms: ' + vals[0]
                       }
           ")
         )
@@ -419,7 +419,7 @@ mod_hot_cold_server <- function(id, r){
           ),
           columns = list(
             search = reactable::colDef(
-              name = "Search",
+              name = "Publications",
               html = TRUE
             ),
             .selection = reactable::colDef(
@@ -464,7 +464,7 @@ mod_hot_cold_server <- function(id, r){
           ),
           columns = list(
             search = reactable::colDef(
-              name = "Search",
+              name = "Publications",
               html = TRUE
             ),
             .selection = reactable::colDef(

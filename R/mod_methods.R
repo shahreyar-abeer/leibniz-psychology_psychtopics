@@ -60,7 +60,7 @@ mod_methods_ui <- function(id){
               tags$a("topic modeling", href = "https://en.wikipedia.org/wiki/Topic_model", target = "_blank"),
               ", an unsupervised machine learning method.
               The results of topic modeling are words that are frequently used together in publications (see the TopTerms in the Browse Topics table). 
-              These word clusters are referred to as Topics.
+              These word clusters are referred to as 'topics'.
               The topic labels were assigned by the PsychTopics team based on inspecting the most representative publications and TopTerms of each topic. 
               In addition, topic contents were validated using the ",
               tags$a("APA classification system", href = "https://www.apa.org/pubs/databases/training/class-codes", target = "_blank"), "."
@@ -108,12 +108,13 @@ mod_methods_ui <- function(id){
             bodyText(tags$b("PsychTopics’ topic modeling settings are:")),
             bodyText(
               tags$ul(
-                tags$li("Number of topics (K) = 200"),
-                tags$li("alpha = 0.0001 (only few topic per publication)"),
+                tags$li("Number of topics (K) = 350"),
+                tags$li("alpha = 0.0001 (only few topics per publication)"),
                 tags$li("eta = 1/K"),
                 tags$li("Number of iterations = 500"),
-                tags$li("Number of prototypes = 100"),
-                tags$li("Limit for new vocabulary: word appears in at least 5 publications")
+                tags$li("Number of prototypes = 25"),
+				        tags$li("Memory parameter: 100 % of last year's publications"),
+                tags$li("Limit for new vocabulary: word appears at least 10 times")
               )
             ),
             
@@ -234,8 +235,9 @@ mod_methods_server <- function(id, r){
 
       tagList(
         "Run the initiation model (a ", 
-        tags$a("IdaPrototype", href = "https://github.com/JonasRieger/ldaPrototype/"),
-        glue::glue(" for the years 1980-{r$current_year})")
+        tags$a("IdaPrototype", href = "https://github.com/JonasRieger/ldaPrototype/", target = "_blank"),
+        glue::glue(" for the years 1980-2009")
+		# glue::glue(" for the years 1980-{r$current_year})")
       )
     })
  

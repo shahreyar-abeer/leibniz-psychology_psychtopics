@@ -18,25 +18,25 @@ mod_start_ui <- function(id){
         style = "background-color: #c6cf78ff",
         content = tagList(
           bodyText(
-            tagList("With PsychTopics, you can explore current and past ",
+            tagList("With this tool, you can explore current and past ",
                     tags$b("research trends in psychology"),
                     " from the ",  tags$b("German-speaking countries."),
                     " Topics are identified in ", tags$a("PSYNDEX", href = "http://www.psyndex.de", target = "_blank"),
                     ", the comprehensive literature database produced by the ",
-                    tags$a("Leibniz Institute for Psychology", href = "https://www.leibniz-psychology.org/en/", target = "_blank"),
-                    " (ZPID)."
+                    tags$a("Leibniz Institute for Psychology (ZPID)", href = "https://www.leibniz-psychology.org/en/", target = "_blank"),
+                    "."
             )
           ),
           br(),
           bodyText(uiOutput(ns("last_update"))),
-          
+          br(),
           bodyText(
             "PsychTopics is ", tags$b("open-source software"), ".", br(),
             " See the ",
             tags$a("GitHub repo", href = "https://github.com/leibniz-psychology", target = "_blank"),
-            " for a list of ", tags$b("contributors"), " and the code."
+            " for a list of contributors and the code."
           ),
-          
+          br(),
           bodyText(
             tagList(
               "How to cite: ",
@@ -336,7 +336,7 @@ mod_start_server <- function(id, r){
         echarts4r::e_bar(Freq, name = "n-docs", bind = tooltip) %>% 
         echarts4r::e_title(text = glue::glue("Popular topics in {r$latest_year}")) %>% 
         echarts4r::e_flip_coords() %>% 
-        echarts4r::e_x_axis(name = "number of documents", nameLocation = "center", nameGap = 27) %>% 
+        echarts4r::e_x_axis(name = "essential publications", nameLocation = "center", nameGap = 27) %>% 
         echarts4r::e_y_axis(name = "ID", nameLocation = "center", nameRotate = 0, nameGap = 35, inverse = TRUE) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
@@ -345,8 +345,8 @@ mod_start_server <- function(id, r){
               var vals = params.name.split(';');
               return('ID: ' + params.value[1] +
                       '<br/> Label: ' + vals[1] +
-                      '<br/> N docs: ' + params.value[0]) + 
-                      '<br/> Topic: ' + vals[0]
+                      '<br/> Essential Publications: ' + params.value[0]) + 
+                      '<br/> Top Terms: ' + vals[0]
                       }
           ")
         ) %>% 
@@ -407,7 +407,7 @@ mod_start_server <- function(id, r){
         echarts4r::e_bar(n_docs, name = "n-docs", bind = tooltip) %>% 
         # echarts4r::e_title(text = "Popular topics overall") %>% 
         echarts4r::e_flip_coords() %>% 
-        echarts4r::e_x_axis(name = "number of documents", nameLocation = "center", nameGap = 27) %>% 
+        echarts4r::e_x_axis(name = "essential publications", nameLocation = "center", nameGap = 27) %>% 
         echarts4r::e_y_axis(inverse = TRUE) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
@@ -416,8 +416,8 @@ mod_start_server <- function(id, r){
               var vals = params.name.split(';');
               return('ID: ' + params.value[1] +
                       '<br/> Label: ' + vals[1] +
-                      '<br/> N docs: ' + params.value[0]) + 
-                      '<br/> Topic: ' + vals[0]
+                      '<br/> Essential Publications: ' + params.value[0]) + 
+                      '<br/> Top Terms: ' + vals[0]
                       }
           ")
         ) %>% 

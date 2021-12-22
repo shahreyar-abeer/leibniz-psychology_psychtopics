@@ -52,7 +52,7 @@ mod_topic_evol_ui <- function(id){
           title = uiOutput(ns("title_box2")),
           content = tagList(
             shiny.fluent::Text(
-              "A topic's ", tags$b("number of documents"),
+              "A topic's number of ", tags$b("essential publications"),
               " is determined by counting all publications that mainly address the topic 
               (i.e., at least 50% of a publications’ content is related to the topic)."
             )
@@ -77,7 +77,7 @@ mod_topic_evol_ui <- function(id){
               These word groups are found automatically by the algorithm.",
               br(), br(),
               "This table shows the ", tags$b("ten most characterizing words of the topic"),
-              " (sorted from top to bottom), and how they change over years.",
+              " (sorted from top to bottom), ", tags$b("and how they change over years."),
               br(), br(),
               "The underlying topic identification method adds new documents every year, letting the topics evolve over time."
             )
@@ -141,13 +141,13 @@ mod_topic_evol_server <- function(id, r){
     
     output$slider_input = renderUI({
       
-      req(r$current_year, r$start_year)
+      req(r$current_year, r$start_evo)
       
       shiny.fluent::Slider(
         onChange = shiny.fluent::setInput(ns("slider"), 2),
         ranged = TRUE,
         label = "Select the range of years",
-        min = r$start_year,
+        min = r$start_evo,
         max = r$current_year,
         defaultValue = r$current_year,
         defaultLowerValue = (r$current_year - 5),
@@ -297,7 +297,7 @@ mod_topic_evol_server <- function(id, r){
     })
     
     output$plot = echarts4r::renderEcharts4r({
-      req(r$topic, input$search)
+      req(r$topic, input$search, r$start_year, r$current_year)
       
       
       r$n_doc_year %>%
@@ -308,10 +308,11 @@ mod_topic_evol_server <- function(id, r){
           tooltip = glue::glue("{TopTerms};{id};{Label}"),
           year = as.character(year)
         ) %>% 
+        dplyr::filter(year %in% (r$start_year):(r$current_year-1)) %>% # leave out current year (last row)
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(Freq, bind = tooltip) %>% 
         echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, axisPointer = list(snap = TRUE)) %>% 
-        echarts4r::e_y_axis(name = "number of documents", nameLocation = "center", nameGap = 38) %>% 
+        echarts4r::e_y_axis(name = "essential publications", nameLocation = "center", nameGap = 38) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
           appendToBody = TRUE,
@@ -322,9 +323,9 @@ mod_topic_evol_server <- function(id, r){
               var vals = params.name.split(';');
               return('ID: ' + vals[1] + 
                       '<br/> Label: ' + vals[2] + 
-                      '<br/> N docs: ' + params.value[1]) +
+                      '<br/> Essential Publications: ' + params.value[1]) +
                       '<br/> Year: ' + params.value[0] + 
-                      '<br/> Overall top terms: ' + vals[0]
+                      '<br/> Overall Top Terms: ' + vals[0]
                       }
           ")
         )

@@ -130,7 +130,7 @@ mod_popular_by_year_ui <- function(id){
               For better interpretation, the PsychTopics team formulated topic ", tags$b("labels."),
               br(),
               br(),
-              "The ", tags$b("number of documents"), " across all years is determined by counting all publications
+              "The number of ", tags$b("essential documents"), " across all years is determined by counting all publications
               that mainly address the topic (i.e., at least 50% of a publications’ content is related to the topic).",
               br(),
               br(),
@@ -196,14 +196,15 @@ mod_popular_by_year_server <- function(id, r){
       req(input$selected_year == r$current_year)
       
       #bodyText(shiny.fluent::Icon(iconName = "WarningSolid", style = list(fontSize = 33)), glue::glue("  Topics of {r$current_year} are preliminary, as journals, books, and reports on specific topics are published in waves throughout the year."))
-      bodyText(tags$b("NOTE:"), glue::glue(" Topics of {r$current_year} are preliminary, as journals, books, and reports on specific topics are published in waves throughout the year."))
+      bodyText(tags$b("NOTE: "), glue::glue(" Topics of {r$current_year} are preliminary, as journals, books, and reports on specific topics are published in waves throughout the year.
+                                           \nLast Updated: {r$last_updated}"))
       
     })
     
-    output$last_updated = renderUI({
-      req(r$last_updated)
-      bodyText(glue::glue("Last Updated: {r$last_updated}"))
-    })
+    # output$last_updated = renderUI({
+    #   req(r$last_updated)
+    #   bodyText(glue::glue("Last Updated: {r$last_updated}"))
+    # })
     
     output$plot_box2 = echarts4r::renderEcharts4r({
       req(r$n_doc_year, r$topic, input$dropdown_most_popular)
@@ -236,7 +237,7 @@ mod_popular_by_year_server <- function(id, r){
         echarts4r::e_bar(Freq, name = "N docs", bind = tooltip, selectedMode = TRUE, select = list(itemStyle = list(color = "#241b3e"))) %>% 
         #echarts4r::e_title(text = glue::glue("Popular topics in {input$selected_year}")) %>% 
         echarts4r::e_flip_coords() %>% 
-        echarts4r::e_x_axis(name = "number of documents", nameLocation = "center", nameGap = 27) %>% 
+        echarts4r::e_x_axis(name = "essential publications", nameLocation = "center", nameGap = 27) %>% 
         echarts4r::e_y_axis(name = "ID", nameLocation = "center", nameRotate = 0, nameGap = 35, inverse = TRUE) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
@@ -245,9 +246,9 @@ mod_popular_by_year_server <- function(id, r){
               var vals = params.name.split(';');
               return('ID: ' + params.value[1] + 
                       '<br/> Label: ' + vals[2] +
-                      '<br/> N docs: ' + params.value[0]) +
+                      '<br/> Essential Publications: ' + params.value[0]) +
                       '<br/> Year: ' + vals[1] + 
-                      '<br/> Topic: ' + vals[0]
+                      '<br/> Top Terms: ' + vals[0]
                       }
           ")
         ) %>% 
@@ -308,14 +309,21 @@ mod_popular_by_year_server <- function(id, r){
             # id = reactable::colDef(
             #   name = "ID"
             # ),
+            TopTerms = reactable::colDef(
+              name = "Top Terms"
+            ),
+            n_docs = reactable::colDef(
+              name = "Essential Publications"
+            ),
+            year = reactable::colDef(
+              name = "Year"
+            ),
             search = reactable::colDef(
-              name = "Search",
+              name = "Publications",
               html = TRUE
             ),
-            # freq = reactable::colDef(
-            #   name = "Prevalence"
-            # ),
             Empirical = reactable::colDef(
+              name = "Empirical %",
               format = reactable::colFormat(digits = 2)
             ),
             .selection = reactable::colDef(

@@ -8,6 +8,11 @@ app_server <- function( input, output, session ) {
   
   r = reactiveValues()
   
+  
+  ## update the following line by hand
+  r$last_updated = "December 8, 2021"
+  
+  
   r$n_docs_year <- isolate(readRDS("inst/data/n_docs_year.RDS"))
   
   n_docs_year_id <- readRDS("inst/data/n_docs_year.RDS") # topic ids instead of labels
@@ -23,12 +28,10 @@ app_server <- function( input, output, session ) {
   r$n_docs_time <- time(n_docs_year_id) # for trend analysis
   r$n_docs_ts <- ts(n_docs_year_id, start = as.integer(years[1])) # Time-series
   
-
-  
   
   r$topic <- isolate(readRDS("inst/data/topic.RDS")) # a list of topics and top terms
   r$booster <- isolate(readRDS("inst/data/booster.RDS")) # a table with factors for term boosting in PubPsych.eu
-  
+
   r$n_doc_year = isolate(readRDS("inst/data/n_docs_year.RDS")) %>% 
     as.table() %>% 
     as.data.frame() %>% 
@@ -50,13 +53,11 @@ app_server <- function( input, output, session ) {
   r$topic_evo = readRDS("./inst/data/topic_evo.RDS")
 
   
-  
-  ## update the following line by hand
-  r$last_updated = "18th Oct, 2021"
-  
+
   ## ---
   r$current_year = isolate(max(r$years))
   r$start_year = isolate(min(r$years))
+  r$start_evo = isolate(min(as.numeric(colnames(r$topic_evo[[1]]))))
   
   
   mod_start_server("start", r)
