@@ -330,9 +330,9 @@ mod_browse_topics_server <- function(id, r){
                   //
                   // output:
                   //  - content to render (e.g. an HTML string)
+                  
                   all_years = cellInfo.value.split(" \\n ")
                   n = all_years.length - 1
-                  // console.log(y2)
                   
                   if (!state.searchValue) {
                     show = all_years[n]
@@ -347,15 +347,13 @@ mod_browse_topics_server <- function(id, r){
                     }
                   }
                 
-                  x1 = `<div class=\\"react-container\\">
-                          <script class=\\"react-data\\" type=\\"application/json\\">{\\"type\\":\\"element\\",\\"module\\":\\"@fluentui/react\\",\\"name\\":\\"TooltipHost\\",\\"props\\":{\\"type\\":\\"object\\",\\"value\\":{\\"content\\":{\\"type\\":\\"raw\\",\\"value\\":` + `"` + all_years + `"` + `},\\"delay\\":{\\"type\\":\\"raw\\",\\"value\\":0},\\"children\\":{\\"type\\":\\"element\\",\\"module\\":\\"@fluentui/react\\",\\"name\\":\\"Text\\",\\"props\\":{\\"type\\":\\"raw\\",\\"value\\":{\\"children\\":` + `"` + show + `"` + `}}}}}}</script>
-                          <script>jsmodule["@/shiny.react"].findAndRenderReactData()</script>
-                        </div>`
-                  // console.log(typeof x1)
+
                   console.log(show)
+                  
                 
+                  // return "<div id = " + cellInfo.index + ">" + show + "</div>"
                   return show
-                
+                  
                 }
               '),
               
