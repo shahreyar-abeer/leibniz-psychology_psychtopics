@@ -36,7 +36,7 @@ mod_browse_topics_ui <- function(id){
           title = "Topic Trends",
           content = tagList(
             shiny.fluent::Text(
-              "A topic's ", tags$b("number of documents"), " is determined by counting all publications that mainly address
+              "A topic's ", tags$b("essential publications"), " is determined by counting all publications that mainly address
               the topic (i.e., at least 50% of a publications' content is related to the topic)."
             )
           )
@@ -111,7 +111,7 @@ mod_browse_topics_ui <- function(id){
               For better interpretation, the PsychTopics team formulated topic ", tags$b("labels."),
               br(),
               br(),
-              "The ", tags$b("number of documents"), " across all years is determined by counting all publications
+              "The ", tags$b("essential publications"), " across all years is determined by counting all publications
               that mainly address the topic (i.e., at least 50% of a publications’ content is related to the topic).",
               br(),
               br(),
@@ -206,7 +206,7 @@ mod_browse_topics_server <- function(id, r){
     
     
     output$plot_box2 = echarts4r::renderEcharts4r({
-      req(r$n_doc_year, r$topic, id_selected())
+      req(r$n_doc_year, r$topic, id_selected(), r$start_year, r$current_year)
       
       label1 <- list(
         formatter = htmlwidgets::JS(
@@ -227,11 +227,12 @@ mod_browse_topics_server <- function(id, r){
           Label = factor(Label)
         ) %>% 
         dplyr::group_by(Label) %>% 
+        dplyr::filter(year %in% (r$start_year):(r$current_year-1)) %>% # leave out current year (last row)
         
         echarts4r::e_charts(year, reorder = FALSE) %>% 
         echarts4r::e_line(Freq, bind = tooltip) %>% 
         echarts4r::e_x_axis(name = "Year", nameLocation = "center", nameGap = 27, axisPointer = list(snap = TRUE)) %>% 
-        echarts4r::e_y_axis(name = "no of documents", nameLocation = "center", nameGap = 31) %>% 
+        echarts4r::e_y_axis(name = "essential publications", nameLocation = "center", nameGap = 31) %>% 
         echarts4r::e_tooltip(
           confine = TRUE,
           appendToBody = TRUE,
@@ -242,9 +243,9 @@ mod_browse_topics_server <- function(id, r){
               var vals = params.name.split(';');
               return('ID: ' + vals[1] + 
                       '<br/> Label: ' + vals[2] + 
-                      '<br/> N docs: ' + params.value[1]) +
+                      '<br/> Essential publications: ' + params.value[1]) +
                       '<br/> Year: ' + params.value[0] + 
-                      '<br/> Topic: ' + vals[0]
+                      '<br/> Top Terms: ' + vals[0]
                       }
           ")
         )
@@ -312,13 +313,21 @@ mod_browse_topics_server <- function(id, r){
             #   name = "ID"
             # ),
             search = reactable::colDef(
-              name = "Search",
+              name = "Publications",
               html = TRUE
             ),
+            TopTerms = reactable::colDef(
+              name = "Top Terms"
+            ),
+            n_docs = reactable::colDef(
+              name = "Essential Publications"
+            ),
             Empirical = reactable::colDef(
+              name = "Empirical %",
               format = reactable::colFormat(digits = 2)
             ),
             topic_evo = reactable::colDef(
+              name = "Evolution Terms",
               show = TRUE,
               html = TRUE,
               
@@ -339,7 +348,7 @@ mod_browse_topics_server <- function(id, r){
                   } else {
                     x = all_years.filter(s => s.includes(state.searchValue))
                     if (x.length == 0) {
-                      show = "No match"
+                      show = "No Match"
                     } else if (x.length == 1) {
                       show = x
                     } else if (x.length > 1) {
@@ -348,7 +357,7 @@ mod_browse_topics_server <- function(id, r){
                   }
                 
 
-                  console.log(show)
+                  // console.log(show)
                   
                 
                   // return "<div id = " + cellInfo.index + ">" + show + "</div>"
