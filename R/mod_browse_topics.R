@@ -167,31 +167,31 @@ mod_browse_topics_server <- function(id, r){
       #   ) %>% as.character()
       # }
       
-      req(r$topic_evo)
+      req(r$topic_evo_concatenated)
       
-      make_topic_evo_string = function(each) {
-        #years = attributes(each)$dimnames[[2]]
-        
-        each = as.data.frame(each)
-        
-        years = names(each)
-        
-        get_all_strings = function(year) {
-          strings = glue::glue_collapse(each[[year]], sep = ", ")
-          glue::glue("{year}: {strings}")
-        }
-        
-        all_strings = sapply(years, get_all_strings)
-        glue::glue_collapse(all_strings, sep = " \n ")
-        
-      }
+      # make_topic_evo_string = function(each) {
+      #   #years = attributes(each)$dimnames[[2]]
+      #   
+      #   each = as.data.frame(each)
+      #   
+      #   years = names(each)
+      #   
+      #   get_all_strings = function(year) {
+      #     strings = glue::glue_collapse(each[[year]], sep = ", ")
+      #     glue::glue("{year}: {strings}")
+      #   }
+      #   
+      #   all_strings = sapply(years, get_all_strings)
+      #   glue::glue_collapse(all_strings, sep = "\n")
+      #   
+      # }
       
-      topics = sapply(r$topic_evo, make_topic_evo_string)
+      # topics = sapply(r$topic_evo, make_topic_evo_string)
       
       r$topic %>% 
         dplyr::mutate(
           search = createLink(TopTerms, r$booster, ID),
-          topic_evo = topics
+          topic_evo = r$topic_evo_concatenated
         ) %>% 
         dplyr::arrange(-n_docs)
     })
@@ -340,7 +340,7 @@ mod_browse_topics_server <- function(id, r){
                   // output:
                   //  - content to render (e.g. an HTML string)
                   
-                  all_years = cellInfo.value.split(" \\n ")
+                  all_years = cellInfo.value.split("\\n")
                   n = all_years.length - 1
                   
                   if (!state.searchValue) {
