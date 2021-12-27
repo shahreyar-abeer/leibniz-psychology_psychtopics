@@ -45,3 +45,47 @@ createLink <- function(val, boost, topicnum) {
          val,"%29%29+DB%3DPSYNDEX&stats=TOP' target='_blank' class='btn btn-primary'>Search PSYNDEX</a>")
 }
 
+
+
+
+
+
+#' Function that adds a new RDS file named topic_evo_concatenated.RDS
+#'
+#' @param topic_evo_rds the topic_evo.RDS as an object
+#' @param directory the directory to save to
+#'
+#'
+#' @examples
+#' \dontrun{
+#' topic_evo_rds = readRDS("inst/data/topic_evo.RDS")
+#' make_topic_evo_concatenated(topic_evo_rds)
+#' }
+make_topic_evo_concatenated = function(topic_evo_rds, directory = "inst/data/") {
+  
+  
+  make_topic_evo_string = function(each) {
+    
+    each = as.data.frame(each)
+    years = names(each)
+    
+    get_all_strings = function(year) {
+      strings = glue::glue_collapse(each[[year]], sep = ", ")
+      glue::glue("{year}: {strings}")
+    }
+    
+    all_strings = sapply(years, get_all_strings)
+    glue::glue_collapse(all_strings, sep = "\n")
+    
+  }
+  
+  topic_evo_concatenated = sapply(topic_evo_rds, make_topic_evo_string)
+  name = "topic_evo_concatenated.RDS"
+  saveRDS(topic_evo_concatenated, glue::glue("{directory}/{name}"))
+}
+
+## example
+# topic_evo_rds = readRDS("inst/data/topic_evo.RDS")
+# make_topic_evo_concatenated(topic_evo_rds)
+
+#stringr::str_extract_all(x, "1999.*")
