@@ -51,6 +51,7 @@ app_server <- function( input, output, session ) {
       Freq = round(Freq, 2)
     )
   r$topic_evo = readRDS("./inst/data/topic_evo.RDS")
+  r$topic_evo_concatenated = readRDS("./inst/data/topic_evo_concatenated.RDS")
 
   
 
