@@ -207,9 +207,15 @@ mod_popular_by_year_server <- function(id, r){
     # })
     
     output$plot_box2 = echarts4r::renderEcharts4r({
-      req(r$n_doc_year, r$topic, input$dropdown_most_popular)
+      req(r$n_doc_year, r$topic, input$dropdown_most_popular, r$topic_evo_concatenated)
       
       color <- "#953386"
+      topics = r$topic %>% 
+        dplyr::mutate(
+          topic_evo_year = r$topic_evo_concatenated %>%
+            stringr::str_extract(glue::glue("{input$selected_year}.*")) %>% 
+            stringr::str_remove(glue::glue("{input$selected_year}: "))
+        )
       top = input$dropdown_most_popular
       
       df = r$n_doc_year %>%
@@ -217,7 +223,7 @@ mod_popular_by_year_server <- function(id, r){
         dplyr::arrange(-Freq) %>%
         #tibble::glimpse(.) %>% 
         dplyr::slice_head(n = top) %>%
-        dplyr::left_join(r$topic, by = c("id" = "ID")) %>% 
+        dplyr::left_join(topics, by = c("id" = "ID")) %>% 
         #dplyr::mutate(Freq = round(Freq * 100, 2)) %>%
         #dplyr::left_join(r$topic, by = c("id" = "Nr..")) %>% 
         dplyr::mutate(
@@ -292,7 +298,7 @@ mod_popular_by_year_server <- function(id, r){
       req(r_mod_pby$df)
       
       r_mod_pby$df %>% 
-        dplyr::select(ID = id2, Label, year, TopTerms, n_docs = Freq, Empirical, Journals, search) %>% 
+        dplyr::select(ID = id2, Label, year, TopTerms, n_docs = Freq, Empirical, Journals, search, topic_evo_year) %>% 
         reactable::reactable(
           rownames = FALSE,
           searchable = TRUE,
@@ -311,6 +317,9 @@ mod_popular_by_year_server <- function(id, r){
             # ),
             TopTerms = reactable::colDef(
               name = "Top Terms"
+            ),
+            topic_evo_year = reactable::colDef(
+              name = glue::glue("Top Terms {input$selected_year}")
             ),
             n_docs = reactable::colDef(
               name = "Essential Publications"
