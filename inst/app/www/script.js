@@ -16,7 +16,16 @@ $(document).ready(function() {
   Shiny.addCustomMessageHandler('pickOne', function(arg) {
     $(".ms-BasePicker-input").click();
     $("#sug-0").click();
+    console.log("clicked")
   })
+  
+  // handler for tag picker
+  Shiny.addCustomMessageHandler(
+    type = 'updateTopicIds', function(arg) {
+      window.topicIds = arg.values.map((topic, index) => ({ key: (index + 1), name: topic }) );
+      Shiny.setInputValue('topic_evol-search', topicIds.slice(0, 1));
+      console.log("updated")
+  });
   
 
 
@@ -63,6 +72,27 @@ $(document).ready(function() {
       $(".title2").removeClass("title2-opened");
     }
   });
+  
+
 
 
 });
+
+
+// pure js
+
+// functions for tag picker
+function listContainsTagList(tag, tagList) {
+  if (!tagList || !tagList.length || tagList.length === 0) {
+    return false;
+  }
+  return tagList.some(compareTag => compareTag.key === tag.key);
+};
+
+function filterSuggestedTags(filterText, tagList) {
+  return filterText
+    ? topicIds.filter(
+        tag => tag.name.toLowerCase().includes(filterText.toLowerCase()) && !listContainsTagList(tag, tagList),
+      )
+    : [];
+};

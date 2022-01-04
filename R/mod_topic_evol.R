@@ -30,11 +30,14 @@ mod_topic_evol_ui <- function(id){
             div(
               class = "ms-Grid-col ms-sm5 ms-xl5 mod-evol-search2",
               shiny.fluent::Label("Select a Topic"),
-              shiny.fluent::NormalPeoplePicker.shinyInput(
-                inputId = ns("search"),
-                options = 1:10,
-                itemLimit = 1
-              )
+              # shiny.fluent::NormalPeoplePicker.shinyInput(
+              #   inputId = ns("search"),
+              #   options = 1:10,
+              #   itemLimit = 1
+              # ),
+              
+              uiOutput(ns("tagPicker"))
+              
             )
           ),
           
@@ -139,6 +142,7 @@ mod_topic_evol_server <- function(id, r){
       upper = NULL
     )
     
+    
     output$slider_input = renderUI({
       
       req(r$current_year, r$start_evo)
@@ -155,36 +159,32 @@ mod_topic_evol_server <- function(id, r){
       )
     })
     
+    output$tagPicker = renderUI({
+      req(r$topic)
+      
+      ## update the topicIds in javascript
+      golem::invoke_js("updateTopicIds", list = list(values = r$topic$Label))
+      ## set the slider for the first run, this actually imitates an initial click by the user through javascript
+      golem::invoke_js("setSlider", list = list(id = ns("slider"), vals = c((r$current_year - 5), r$current_year)))
+      
+      ## the search input for the topic ids, lots of javascript involved!
+      TagPicker(
+        defaultSelectedItems = JS("topicIds.slice(0, 1)"),
+        onResolveSuggestions = JS("filterSuggestedTags"),
+        onEmptyInputFocus = JS("function(tagList) { return topicIds.filter(tag => !listContainsTagList(tag, tagList)); }"),
+        getTextFromItem = JS("function(item) { return item.text }"),
+        pickerSuggestionsProps = list(suggestionsHeaderText = 'Suggested topic(s)', noResultsFoundText = 'No topic found'),
+        itemLimit = 1,
+        onChange = JS("function(selection) { Shiny.setInputValue('topic_evol-search', selection) }")
+      )
+    })
+    
     output$cur_year_text = renderUI({
       req(r$current_year)
       bodyText(glue::glue("For Trends, only records from 1980 to {r$current_year - 1} are included,
                since publications of the current year may not be fully covered yet."))
     })
     
-    observeEvent(r$topic, {
-      req(r$topic, r$current_year)
-      
-      options_data = data.frame(
-        key = r$topic$ID,
-        imageUrl = NA,
-        imageInitials = as.character(r$topic$ID),
-        text = as.character(r$topic$Label),
-        secondaryText = r$topic$ID,
-        presence = 0,
-        initialsColor = 22
-      )
-      
-      
-      shiny.fluent::updateNormalPeoplePicker.shinyInput(
-        inputId = "search",
-        options = options_data,
-        #value = options_data[1, ],
-        defaultSelectedItems = options_data[1, ]
-      )
-      
-      golem::invoke_js("pickOne", list = list())
-      golem::invoke_js("setSlider", list = list(id = ns("slider"), vals = c((r$current_year - 5), r$current_year)))
-    })
     
     observeEvent(input$slider, {
       #req(r_mod_topic_eval$lower)
@@ -212,7 +212,8 @@ mod_topic_evol_server <- function(id, r){
       if (is.null(input$search)) {
         HTML("Trend Plot")
       } else {
-        HTML("Trend of Topic: ", r$topic$Label[r$topic$ID == input$search])
+        searched = input$search[1] %>% as.numeric()
+        HTML("Trend of Topic ", r$topic$Label[r$topic$ID == searched])
       }
       
     })
@@ -223,7 +224,8 @@ mod_topic_evol_server <- function(id, r){
       if (is.null(input$search)) {
         HTML("Change of Terms Table")
       } else {
-        HTML("Change of Top Terms for Topic: ", r$topic$Label[r$topic$ID == input$search])
+        searched = input$search[1] %>% as.numeric()
+        HTML("Change of Top Terms for Topic ", r$topic$Label[r$topic$ID == searched])
       }
       
     })
@@ -257,7 +259,10 @@ mod_topic_evol_server <- function(id, r){
     output$table = reactable::renderReactable({
       req(r$topic_evo, input$search, r_mod_topic_eval$lower)
       
-      r$topic_evo[[input$search]] %>% 
+      searched = input$search[1] %>% as.numeric()
+      
+      
+      r$topic_evo[[searched]] %>% 
         as.data.frame() %>% 
         dplyr::select(r_mod_topic_eval$lower:r_mod_topic_eval$upper) %>% 
         reactable::reactable(
@@ -299,13 +304,19 @@ mod_topic_evol_server <- function(id, r){
     output$plot = echarts4r::renderEcharts4r({
       req(r$topic, input$search, r$start_year, r$current_year)
       
+      searched = input$search[1] %>% as.numeric()
+      
+      topics = r$topic %>% 
+        dplyr::mutate(
+          topic_evo_year = r$topic_evo_concatenated
+        )
       
       r$n_doc_year %>%
-        dplyr::filter(id == input$search) %>% 
-        dplyr::left_join(r$topic, by = c("id" = "ID")) %>%
+        dplyr::filter(id == searched) %>% 
+        dplyr::left_join(topics, by = c("id" = "ID")) %>%
         dplyr::group_by(Label) %>% 
         dplyr::mutate(
-          tooltip = glue::glue("{TopTerms};{id};{Label}"),
+          tooltip = glue::glue("{topic_evo_year};{id};{Label}"),
           year = as.character(year)
         ) %>% 
         dplyr::filter(year %in% (r$start_year):(r$current_year-1)) %>% # leave out current year (last row)
@@ -316,16 +327,17 @@ mod_topic_evol_server <- function(id, r){
         echarts4r::e_tooltip(
           confine = TRUE,
           appendToBody = TRUE,
-          textStyle = list(width = 50, overflow = "break"),
+          textStyle = list(width = 50, overflow = "truncate"),
           axisPointer = list(type = "cross"),
           formatter = htmlwidgets::JS("
             function(params){
               var vals = params.name.split(';');
+              year = params.value[0];
               return('ID: ' + vals[1] + 
                       '<br/> Label: ' + vals[2] + 
                       '<br/> Essential Publications: ' + params.value[1]) +
-                      '<br/> Year: ' + params.value[0] + 
-                      '<br/> Overall Top Terms: ' + vals[0]
+                      '<br/> Year: ' + year + 
+                      '<br/> Top Terms ' + vals[0].match(year + '.*')
                       }
           ")
         )
