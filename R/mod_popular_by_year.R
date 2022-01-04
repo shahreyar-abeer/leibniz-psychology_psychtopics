@@ -229,7 +229,7 @@ mod_popular_by_year_server <- function(id, r){
         dplyr::mutate(
           search = createLink(TopTerms, r$booster, id),
           id2 = as.factor(id),
-          tooltip = glue::glue("{TopTerms}; {input$selected_year};{Label}")
+          tooltip = glue::glue("{topic_evo_year}; {input$selected_year};{Label}")
         )
       
       r_mod_pby$df = df
@@ -298,7 +298,7 @@ mod_popular_by_year_server <- function(id, r){
       req(r_mod_pby$df)
       
       r_mod_pby$df %>% 
-        dplyr::select(ID = id2, Label, year, TopTerms, n_docs = Freq, Empirical, Journals, search, topic_evo_year) %>% 
+        dplyr::select(ID = id2, Label, year, topic_evo_year, n_docs = Freq, Empirical, Journals, search) %>% 
         reactable::reactable(
           rownames = FALSE,
           searchable = TRUE,
@@ -315,9 +315,9 @@ mod_popular_by_year_server <- function(id, r){
             # id = reactable::colDef(
             #   name = "ID"
             # ),
-            TopTerms = reactable::colDef(
-              name = "Top Terms"
-            ),
+            # TopTerms = reactable::colDef(
+            #   name = "Top Terms"
+            # ),
             topic_evo_year = reactable::colDef(
               name = glue::glue("Top Terms {input$selected_year}")
             ),
