@@ -316,7 +316,7 @@ mod_topic_evol_server <- function(id, r){
         dplyr::left_join(topics, by = c("id" = "ID")) %>%
         dplyr::group_by(Label) %>% 
         dplyr::mutate(
-          tooltip = glue::glue("{topic_evo_year};{id};{Label}"),
+          tooltip = glue::glue("{topic_evo_year};{id};{Label};{as.numeric(colnames(r$topic_evo[[1]])[1])}"),
           year = as.character(year)
         ) %>% 
         dplyr::filter(year %in% (r$start_year):(r$current_year-1)) %>% # leave out current year (last row)
@@ -333,11 +333,13 @@ mod_topic_evol_server <- function(id, r){
             function(params){
               var vals = params.name.split(';');
               year = params.value[0];
+              min_year = vals[3];
+              top_terms = year <= min_year ? vals[0].match(min_year + '.*')[0].replace(min_year, '') : vals[0].match(year + '.*')[0].replace(year, '');
               return('ID: ' + vals[1] + 
                       '<br/> Label: ' + vals[2] + 
                       '<br/> Essential Publications: ' + params.value[1]) +
                       '<br/> Year: ' + year + 
-                      '<br/> Top Terms ' + vals[0].match(year + '.*')
+                      '<br/> Top Terms' + top_terms
                       }
           ")
         )
