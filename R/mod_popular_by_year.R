@@ -212,9 +212,7 @@ mod_popular_by_year_server <- function(id, r){
       color <- "#953386"
       topics = r$topic %>% 
         dplyr::mutate(
-          topic_evo_year = r$topic_evo_concatenated %>%
-            stringr::str_extract(glue::glue("{input$selected_year}.*")) %>% 
-            stringr::str_remove(glue::glue("{input$selected_year}: "))
+          topic_evo_year = r$topic_evo_concatenated
         )
       top = input$dropdown_most_popular
       
@@ -229,7 +227,7 @@ mod_popular_by_year_server <- function(id, r){
         dplyr::mutate(
           search = createLink(TopTerms, r$booster, id),
           id2 = as.factor(id),
-          tooltip = glue::glue("{topic_evo_year}; {input$selected_year};{Label}")
+          tooltip = glue::glue("{topic_evo_year};{input$selected_year};{Label};{as.numeric(colnames(r$topic_evo[[1]])[1])}")
         )
       
       r_mod_pby$df = df
@@ -250,11 +248,14 @@ mod_popular_by_year_server <- function(id, r){
           formatter = htmlwidgets::JS("
             function(params){
               var vals = params.name.split(';');
+              year = vals[1];
+              min_year = vals[3];
+              top_terms = year <= min_year ? vals[0].match(min_year + '.*')[0].replace(min_year, '') : vals[0].match(year + '.*')[0].replace(year, '');
               return('ID: ' + params.value[1] + 
                       '<br/> Label: ' + vals[2] +
                       '<br/> Essential Publications: ' + params.value[0]) +
-                      '<br/> Year: ' + vals[1] + 
-                      '<br/> Top Terms: ' + vals[0]
+                      '<br/> Year: ' + year + 
+                      '<br/> Top Terms' + top_terms
                       }
           ")
         ) %>% 
@@ -297,8 +298,16 @@ mod_popular_by_year_server <- function(id, r){
     output$topics_table = reactable::renderReactable({
       req(r_mod_pby$df)
       
+      min_year_topic_evo = as.numeric(colnames(r$topic_evo[[1]])[1])
+      selected_year = ifelse(input$selected_year <= min_year_topic_evo, min_year_topic_evo, input$selected_year)
+      
       r_mod_pby$df %>% 
         dplyr::select(ID = id2, Label, year, topic_evo_year, n_docs = Freq, Empirical, Journals, search) %>% 
+        dplyr::mutate(
+          topic_evo_year = topic_evo_year %>%
+            stringr::str_extract(glue::glue("{selected_year}.*")) %>% 
+            stringr::str_remove(glue::glue("{selected_year}: "))
+        ) %>% 
         reactable::reactable(
           rownames = FALSE,
           searchable = TRUE,
