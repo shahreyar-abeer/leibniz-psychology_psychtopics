@@ -42,6 +42,7 @@ golem_add_external_resources <- function(){
     
     ## js code for shiny.router
     tags$script(type = "text/javascript", src = file.path("shiny.router", "shiny.router.js")),
+    tags$script(type = "text/javascript", src = "https://code.jquery.com/ui/1.13.0/jquery-ui.js"),
     
     ## add matomo tracking
     HTML(

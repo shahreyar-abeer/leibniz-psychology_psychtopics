@@ -153,6 +153,15 @@ mod_browse_topics_server <- function(id, r){
       )
     })
     
+    ## send all the topic_evo terms to javascript
+    observeEvent(reactable::getReactableState("topics_table", "pages"), {
+      req(r$topic_evo_concatenated)
+      
+
+      golem::invoke_js("setTopicEvoTerms", list(terms = r$topic_evo_concatenated))
+      golem::invoke_js("initiateWordEmbeddings", list(id = "id"))
+    }, once = TRUE)
+    
     ## the data for the table
     topic = reactive({
       

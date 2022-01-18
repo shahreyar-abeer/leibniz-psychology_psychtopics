@@ -27,6 +27,48 @@ $(document).ready(function() {
       console.log("updated")
   });
   
+  
+  // set a variable with all the topic evo terms
+  Shiny.addCustomMessageHandler('setTopicEvoTerms', function(arg) {
+    window.topicEvoTerms = arg.terms.join("; ");
+  });
+  
+  Shiny.addCustomMessageHandler('initiateWordEmbeddings', function(arg) {
+    $('#browse-topics_table .rt-search').typeahead({
+      hint: true,
+      highlight: false,
+      minLength: 1
+    },
+    {
+      name: 'wordVecs',
+      source: substringMatcher(wordVecs)
+    });
+    
+        
+        
+    // select and enter key press reactions in search Browse Topics 
+    
+    $('.tt-menu').on('click', function() {
+      x = $(".tt-input").val();
+      console.log(x);
+      Reactable.setSearch("browse-topics_table", x);
+    });
+    
+    
+    
+    $('.tt-input').keydown(function(e){
+      if (e.which == 13) { 
+        console.log("enter pressed");
+        x = $(".tt-input").val();
+        console.log(x);
+        Reactable.setSearch("browse-topics_table", x);
+        return false;
+      }
+    });
+    
+  });
+  
+  
 
 
 
@@ -96,3 +138,43 @@ function filterSuggestedTags(filterText, tagList) {
       )
     : [];
 };
+
+
+// word-embeddings in search in Browse topics
+
+
+var substringMatcher = function(strs) {
+  return function findMatches(q, cb) {
+    var matches, substringRegex;
+    
+    // an array that will be populated with substring matches
+    matches = [];
+    
+    // regex used to determine if a string contains the substring `q`
+    //substrRegex = new RegExp(q, 'i');
+    
+    // iterate through the pool of strings and for any string that
+    // contains the substring `q`, add it to the `matches` array
+
+    
+    matched = findSimilarWords(strs, 15, q).map(function(x) { return x[0] });;
+    
+    console.log("top 15 word-embeddings:", matched)
+    
+    $.each(matched, function(i, str) {
+      substrRegex = new RegExp("\\b" + str + "\\b");
+      if (substrRegex.test(topicEvoTerms) && str.length > 1) {
+        matches.push(str);
+      }
+    });
+    
+    //matches = matched.filter(word => topicEvoTerms.includes(word))
+    matches5 = matches.length >= 5 ? matches.slice(0, 5) : matches
+    console.log("top matches with psychtopics words:", matches);
+    cb(matches5);
+  };
+};
+
+
+
+
