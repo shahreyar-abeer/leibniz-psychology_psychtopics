@@ -15,7 +15,7 @@ app_server <- function( input, output, session ) {
   
   r$n_docs_year <- isolate(readRDS("inst/data/n_docs_year.RDS"))
   
-  n_docs_year_id <- readRDS("inst/data/n_docs_year.RDS") # topic ids instead of labels
+  n_docs_year_id <- isolate(readRDS("inst/data/n_docs_year.RDS")) # topic ids instead of labels
   colnames(n_docs_year_id) <- 1:ncol(n_docs_year_id)
   
   K <- ncol(n_docs_year_id) # number of topics
@@ -50,8 +50,8 @@ app_server <- function( input, output, session ) {
       id = rep(1:k, each = n_years),
       Freq = round(Freq, 2)
     )
-  r$topic_evo = readRDS("./inst/data/topic_evo.RDS")
-  r$topic_evo_concatenated = readRDS("./inst/data/topic_evo_concatenated.RDS")
+  r$topic_evo = isolate(readRDS("./inst/data/topic_evo.RDS"))
+  r$topic_evo_concatenated = isolate(readRDS("./inst/data/topic_evo_concatenated.RDS"))
 
   
 
