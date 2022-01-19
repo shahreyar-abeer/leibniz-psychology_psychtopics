@@ -9,14 +9,12 @@ $(document).ready(function() {
   // click go once a year range has been selected with the slider
   Shiny.addCustomMessageHandler('clickGo', function(arg) {
     $("#" + arg.button).click();
-    console.log("#" + arg.button);
   })
   
   // pick a topic from the people picker on start
   Shiny.addCustomMessageHandler('pickOne', function(arg) {
     $(".ms-BasePicker-input").click();
     $("#sug-0").click();
-    console.log("clicked")
   })
   
   // handler for tag picker
@@ -24,7 +22,6 @@ $(document).ready(function() {
     type = 'updateTopicIds', function(arg) {
       window.topicIds = arg.values.map((topic, index) => ({ key: (index + 1), name: topic }) );
       Shiny.setInputValue('topic_evol-search', topicIds.slice(0, 1));
-      console.log("updated")
   });
   
   
@@ -50,7 +47,6 @@ $(document).ready(function() {
     
     $('.tt-menu').on('click', function() {
       x = $(".tt-input").val();
-      console.log(x);
       Reactable.setSearch("browse-topics_table", x);
     });
     
@@ -58,9 +54,7 @@ $(document).ready(function() {
     
     $('.tt-input').keydown(function(e){
       if (e.which == 13) { 
-        console.log("enter pressed");
         x = $(".tt-input").val();
-        console.log(x);
         Reactable.setSearch("browse-topics_table", x);
         return false;
       }
