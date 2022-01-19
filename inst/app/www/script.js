@@ -60,6 +60,8 @@ $(document).ready(function() {
       }
     });
     
+    $('.tt-menu').prepend('<div class="tt-header">Similar words in Psychtopics</div>');
+    
   });
   
   
