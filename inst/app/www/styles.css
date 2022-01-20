@@ -141,17 +141,22 @@ a {
 
 .tt-menu {
   background: white;
-  padding: 7px;
+  padding: 5px;
   border: 1px solid rgb(170, 170, 170);
   line-height: 25px;
 }
+
+.tt-suggestion {
+  padding-left: 11px;
+}
+
 
 .tt-suggestion:hover, .tt-cursor {
   background: #eee;
 }
 
 .tt-header {
-    padding: 0px 12px;
+    padding: 0px 11px;
     font-size: 14px;
     color: rgb(0, 120, 212);
     line-height: 40px;
