@@ -145,7 +145,6 @@ var substringMatcher = function(strs) {
     
     // an array that will be populated with substring matches
     q = q.length > 0 ? q.toLowerCase() : q;
-    console.log(q);
     matches = [];
     
     // regex used to determine if a string contains the substring `q`
