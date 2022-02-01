@@ -164,24 +164,33 @@ mod_popular_by_year_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    opened <- reactiveVal(FALSE)
+    observe({
+      # Set `opened` reactive to indicate whether this page has been opened
+      # It runs only once, after page has been opened for the first time
+      if (!opened()) {
+        opened(shiny.router::get_page() == "popular")
+      }
+    })
+    
     ## reactiveValues for this mod
     r_mod_pby = reactiveValues()
     
     output$title_box2 = renderUI({
-      req(input$selected_year)
+      req(input$selected_year, opened())
       #x = 2019
       glue::glue("Popular Topics of {input$selected_year}")
     })
     
     output$title_box3 = renderUI({
-      req(r$current_year)
+      req(r$current_year, opened())
       #x = 2019
       glue::glue("Details for Popular Topics {input$selected_year}")
     })
     
     
     observeEvent(r$current_year, {
-      req(r$current_year)
+      req(r$current_year, opened())
       
       shiny.fluent::updateDropdown.shinyInput(
         inputId = "selected_year",
@@ -191,7 +200,7 @@ mod_popular_by_year_server <- function(id, r){
     })
     
     output$box1_text = renderUI({
-      req(r$current_year)
+      req(r$current_year, opened())
       print(class(input$selected_year))
       req(input$selected_year == r$current_year)
       
@@ -207,7 +216,7 @@ mod_popular_by_year_server <- function(id, r){
     # })
     
     output$plot_box2 = echarts4r::renderEcharts4r({
-      req(r$n_doc_year, r$topic, input$dropdown_most_popular, r$topic_evo_concatenated)
+      req(r$n_doc_year, r$topic, input$dropdown_most_popular, r$topic_evo_concatenated, opened())
       
       color <- "#953386"
       topics = r$topic %>% 
@@ -296,7 +305,7 @@ mod_popular_by_year_server <- function(id, r){
     # })
     
     output$topics_table = reactable::renderReactable({
-      req(r_mod_pby$df)
+      req(r_mod_pby$df, opened())
       
       min_year_topic_evo = as.numeric(colnames(r$topic_evo[[1]])[1])
       selected_year = ifelse(input$selected_year <= min_year_topic_evo, min_year_topic_evo, input$selected_year)

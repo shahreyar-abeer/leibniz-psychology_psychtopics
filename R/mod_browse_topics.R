@@ -145,8 +145,20 @@ mod_browse_topics_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    
+    opened <- reactiveVal(FALSE)
+    observe({
+      # Set `opened` reactive to indicate whether this page has been opened
+      # It runs only once, after page has been opened for the first time
+      if (!opened()) {
+        opened(shiny.router::get_page() == "browse-topics")
+      }
+    })
+    
+
+    
     output$cur_year_text = renderUI({
-      req(r$current_year)
+      req(r$current_year, opened())
       bodyText(glue::glue("For Trends, only records from 1980 to {r$current_year - 1} are included,
                since publications of the current year may not be recorded yet 
                (journals, books, and reports on specific topics are published in waves throughout the year).")
@@ -215,7 +227,7 @@ mod_browse_topics_server <- function(id, r){
     
     
     output$plot_box2 = echarts4r::renderEcharts4r({
-      req(r$n_doc_year, r$topic, id_selected(), r$start_year, r$current_year)
+      req(r$n_doc_year, r$topic, id_selected(), r$start_year, r$current_year, opened())
       
       label1 <- list(
         formatter = htmlwidgets::JS(
@@ -263,7 +275,7 @@ mod_browse_topics_server <- function(id, r){
     
     
     output$plot_box3 = echarts4r::renderEcharts4r({
-      req(r$empirical, r$topic, id_selected())
+      req(r$empirical, r$topic, id_selected(), opened())
 
       
       r$empirical %>%
@@ -299,6 +311,9 @@ mod_browse_topics_server <- function(id, r){
     
     
     output$topics_table = reactable::renderReactable({
+      
+      req(opened())
+      
       topic() %>% 
         reactable::reactable(
           rownames = FALSE,

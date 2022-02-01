@@ -192,6 +192,15 @@ mod_hot_cold_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    opened <- reactiveVal(FALSE)
+    observe({
+      # Set `opened` reactive to indicate whether this page has been opened
+      # It runs only once, after page has been opened for the first time
+      if (!opened()) {
+        opened(shiny.router::get_page() == "hot-cold")
+      }
+    })
+    
     r_mod_hot_cold = reactiveValues(
       lower = NULL,
       upper = NULL
@@ -199,7 +208,7 @@ mod_hot_cold_server <- function(id, r){
     
     output$slider_input = renderUI({
       
-      req(r$current_year, r$start_year)
+      req(r$current_year, r$start_year, opened())
       
       shiny.fluent::Slider(
         onChange = shiny.fluent::setInput(ns("slider"), 2),
@@ -214,18 +223,20 @@ mod_hot_cold_server <- function(id, r){
     })
     
     output$cur_year_text = renderUI({
-      req(r$current_year)
+      req(r$current_year, opened())
       bodyText(glue::glue("For Trends, only records from 1980 to {r$current_year - 1} are included,
                since publications of the current year may not be fully covered yet."))
     })
     
-    observeEvent(r$current_year, {
+    observeEvent(opened(), {
+      req(opened(), r$current_year)
       golem::invoke_js("setSlider", list = list(id = ns("slider"), vals = c((r$current_year - 5), r$current_year-1)))
     })
     
     observeEvent(input$slider, {
       #req(r_mod_hot_cold$lower)
       
+      req(opened())
       
       if (!is.null(r_mod_hot_cold$lower)) {
         #print("slider is null")
@@ -245,6 +256,8 @@ mod_hot_cold_server <- function(id, r){
     
     output$title_box2 = renderUI({
       
+      req(opened())
+      
       if (is.null(r_mod_hot_cold$lower)) {
         HTML("Hot Topics Plot")
       } else {
@@ -254,6 +267,8 @@ mod_hot_cold_server <- function(id, r){
     })
     
     output$title_box3 = renderUI({
+      
+      req(opened())
       
       if (is.null(r_mod_hot_cold$lower)) {
         HTML("Cold Topics Plot")
@@ -265,6 +280,8 @@ mod_hot_cold_server <- function(id, r){
     
     output$title_box4 = renderUI({
       
+      req(opened())
+      
       if (is.null(r_mod_hot_cold$lower)) {
         HTML("Hot Topics Table")
       } else {
@@ -274,6 +291,8 @@ mod_hot_cold_server <- function(id, r){
     })
     
     output$title_box5 = renderUI({
+      
+      req(opened())
       
       if (is.null(r_mod_hot_cold$lower)) {
         HTML("Cold Topics Table")
@@ -285,7 +304,7 @@ mod_hot_cold_server <- function(id, r){
     
     # trends function
     trends <- reactive({
-      req(r_mod_hot_cold$lower, r_mod_hot_cold$upper)
+      req(r_mod_hot_cold$lower, r_mod_hot_cold$upper, opened())
       
       trends.ab(r_mod_hot_cold$lower-1979, r_mod_hot_cold$upper-1979, 
                 r$n_docs_year, r$n_docs_time,
@@ -294,7 +313,7 @@ mod_hot_cold_server <- function(id, r){
     })
     
     observeEvent(input$go, {
-      req(input$slider)
+      req(input$slider, opened())
       
       shiny.fluent::updateIconButton.shinyInput(inputId = "go", disabled = TRUE)
       if (input$slider[1] == input$slider[2]) {
@@ -309,7 +328,7 @@ mod_hot_cold_server <- function(id, r){
     
     
     output$hot_plot = echarts4r::renderEcharts4r({
-      req(input$go, r_mod_hot_cold$lower)
+      req(input$go, r_mod_hot_cold$lower, opened())
       
       trends()[[3]] %>% tsbox::ts_data.frame() %>% 
         dplyr::mutate(
@@ -349,7 +368,7 @@ mod_hot_cold_server <- function(id, r){
     })  ## hot_plot
     
     output$cold_plot = echarts4r::renderEcharts4r({
-      req(input$go, r_mod_hot_cold$lower)
+      req(input$go, r_mod_hot_cold$lower, opened())
       
       trends()[[4]] %>% tsbox::ts_data.frame() %>% 
         dplyr::mutate(
@@ -391,7 +410,7 @@ mod_hot_cold_server <- function(id, r){
     
     
     output$hot_table = reactable::renderReactable({
-      req(input$go, r_mod_hot_cold$lower)
+      req(input$go, r_mod_hot_cold$lower, opened())
       
       trends()[[1]] %>%
         dplyr::select(ID = NR) %>% 
@@ -436,7 +455,7 @@ mod_hot_cold_server <- function(id, r){
     
     
     output$cold_table = reactable::renderReactable({
-      req(input$go)
+      req(input$go, opened())
       
       trends()[[2]] %>%
         dplyr::select(ID = NR) %>% 

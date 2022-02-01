@@ -137,6 +137,15 @@ mod_topic_evol_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    opened <- reactiveVal(FALSE)
+    observe({
+      # Set `opened` reactive to indicate whether this page has been opened
+      # It runs only once, after page has been opened for the first time
+      if (!opened()) {
+        opened(shiny.router::get_page() == "topic-evolution")
+      }
+    })
+    
     r_mod_topic_eval = reactiveValues(
       lower = NULL,
       upper = NULL
@@ -145,7 +154,7 @@ mod_topic_evol_server <- function(id, r){
     
     output$slider_input = renderUI({
       
-      req(r$current_year, r$start_evo)
+      req(r$current_year, r$start_evo, opened())
       
       shiny.fluent::Slider(
         onChange = shiny.fluent::setInput(ns("slider"), 2),
@@ -160,7 +169,7 @@ mod_topic_evol_server <- function(id, r){
     })
     
     output$tagPicker = renderUI({
-      req(r$topic)
+      req(r$topic, opened())
       
       ## update the topicIds in javascript
       golem::invoke_js("updateTopicIds", list = list(values = r$topic$Label))
@@ -180,14 +189,14 @@ mod_topic_evol_server <- function(id, r){
     })
     
     output$cur_year_text = renderUI({
-      req(r$current_year)
+      req(r$current_year, opened())
       bodyText(glue::glue("For Trends, only records from 1980 to {r$current_year - 1} are included,
                since publications of the current year may not be fully covered yet."))
     })
     
     
     observeEvent(input$slider, {
-      #req(r_mod_topic_eval$lower)
+      req(opened())
 
       
       if (!is.null(r_mod_topic_eval$lower)) {
@@ -208,6 +217,7 @@ mod_topic_evol_server <- function(id, r){
     
     
     output$title_box2 = renderUI({
+      req(opened())
       
       if (is.null(input$search)) {
         HTML("Trend Plot")
@@ -231,7 +241,7 @@ mod_topic_evol_server <- function(id, r){
     })
     
     observeEvent(input$go, {
-      req(input$slider)
+      req(input$slider, opened())
       
       shiny.fluent::updateIconButton.shinyInput(inputId = "go", disabled = TRUE)
       if (input$slider[1] == input$slider[2]) {
@@ -257,7 +267,7 @@ mod_topic_evol_server <- function(id, r){
     # })
     
     output$table = reactable::renderReactable({
-      req(r$topic_evo, input$search, r_mod_topic_eval$lower)
+      req(r$topic_evo, input$search, r_mod_topic_eval$lower, opened())
       
       searched = input$search[1] %>% as.numeric()
       
@@ -302,7 +312,7 @@ mod_topic_evol_server <- function(id, r){
     })
     
     output$plot = echarts4r::renderEcharts4r({
-      req(r$topic, input$search, r$start_year, r$current_year)
+      req(r$topic, input$search, r$start_year, r$current_year, opened())
       
       searched = input$search[1] %>% as.numeric()
       
