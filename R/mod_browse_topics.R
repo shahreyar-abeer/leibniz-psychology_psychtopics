@@ -319,7 +319,7 @@ mod_browse_topics_server <- function(id, r){
           rownames = FALSE,
           compact = TRUE,
           searchable = TRUE,
-          sortable = FALSE,
+          sortable = TRUE,
           resizable = TRUE,
           fullWidth = FALSE,
           defaultPageSize = 5,
