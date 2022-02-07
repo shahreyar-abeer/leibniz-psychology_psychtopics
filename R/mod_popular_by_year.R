@@ -319,7 +319,7 @@ mod_popular_by_year_server <- function(id, r){
         ) %>% 
         reactable::reactable(
           rownames = FALSE,
-          searchable = TRUE,
+          searchable = FALSE,
           sortable = FALSE,
           resizable = TRUE,
           selection = "single",
