@@ -347,8 +347,8 @@ mod_browse_topics_server <- function(id, r){
               name = "Essential Publications"
             ),
             Empirical = reactable::colDef(
-              name = "Empirical %",
-              format = reactable::colFormat(digits = 2)
+              name = "Empirical %"#,
+              #format = reactable::colFormat(digits = 2)
             ),
             topic_evo = reactable::colDef(
               name = "Evolution Terms",

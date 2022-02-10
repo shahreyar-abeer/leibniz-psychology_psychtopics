@@ -350,8 +350,8 @@ mod_popular_by_year_server <- function(id, r){
               html = TRUE
             ),
             Empirical = reactable::colDef(
-              name = "Empirical %",
-              format = reactable::colFormat(digits = 2)
+              name = "Empirical %"#,
+              #format = reactable::colFormat(digits = 2)
             ),
             .selection = reactable::colDef(
               show = TRUE,

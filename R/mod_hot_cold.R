@@ -415,7 +415,7 @@ mod_hot_cold_server <- function(id, r){
       trends()[[1]] %>%
         dplyr::select(ID = NR) %>% 
         dplyr::left_join(r$topic, by = "ID") %>% 
-        dplyr::select(ID, TopTerms, Label) %>% 
+        dplyr::select(ID, TopTerms, Label, Empirical) %>% 
         dplyr::mutate(
           search = createLink(TopTerms, r$booster, ID)
         ) %>% 
@@ -440,6 +440,9 @@ mod_hot_cold_server <- function(id, r){
             search = reactable::colDef(
               name = "Publications",
               html = TRUE
+            ),
+			Empirical = reactable::colDef(
+              name = "Empirical %"
             ),
             .selection = reactable::colDef(
               show = TRUE,
@@ -460,7 +463,7 @@ mod_hot_cold_server <- function(id, r){
       trends()[[2]] %>%
         dplyr::select(ID = NR) %>% 
         dplyr::left_join(r$topic, by = "ID") %>% 
-        dplyr::select(ID, TopTerms, Label) %>% 
+        dplyr::select(ID, TopTerms, Label, Empirical) %>% 
         dplyr::mutate(
           search = createLink(TopTerms, r$booster, ID)
         ) %>% 
@@ -485,6 +488,9 @@ mod_hot_cold_server <- function(id, r){
             search = reactable::colDef(
               name = "Publications",
               html = TRUE
+            ),
+			Empirical = reactable::colDef(
+              name = "Empirical %"
             ),
             .selection = reactable::colDef(
               show = TRUE,
