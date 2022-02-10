@@ -52,9 +52,13 @@ app_server <- function( input, output, session ) {
     )
   r$topic_evo = isolate(readRDS("./inst/data/topic_evo.RDS"))
   r$topic_evo_concatenated = isolate(readRDS("./inst/data/topic_evo_concatenated.RDS"))
-
   
-
+  # topic_evo with search link
+  r$topic_evo_search <- isolate(readRDS("./inst/data/topic_evo_search.RDS"))
+  
+  
+  
+  
   ## ---
   r$current_year = isolate(max(r$years))
   r$start_year = isolate(min(r$years))
