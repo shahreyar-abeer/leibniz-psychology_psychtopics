@@ -234,7 +234,8 @@ mod_popular_by_year_server <- function(id, r){
         #dplyr::mutate(Freq = round(Freq * 100, 2)) %>%
         #dplyr::left_join(r$topic, by = c("id" = "Nr..")) %>% 
         dplyr::mutate(
-          search = createLink(TopTerms, r$booster, id),
+          #search = createLink(TopTerms, r$booster, id),
+          search = "", # for using Top Terms of selected years. See below.
           id2 = as.factor(id),
           tooltip = glue::glue("{topic_evo_year};{input$selected_year};{Label};{as.numeric(colnames(r$topic_evo[[1]])[1])}")
         )
@@ -315,7 +316,9 @@ mod_popular_by_year_server <- function(id, r){
         dplyr::mutate(
           topic_evo_year = topic_evo_year %>%
             stringr::str_extract(glue::glue("{selected_year}.*")) %>% 
-            stringr::str_remove(glue::glue("{selected_year}: "))
+            stringr::str_remove(glue::glue("{selected_year}: ")),
+          search = createLink_evo(topic_evo_year, r$booster),
+          
         ) %>% 
         reactable::reactable(
           rownames = FALSE,
