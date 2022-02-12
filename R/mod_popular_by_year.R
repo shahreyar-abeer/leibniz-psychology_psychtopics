@@ -25,27 +25,10 @@ mod_popular_by_year_ui <- function(id){
           br(),
           shiny.fluent::Stack(
             horizontal = TRUE,
-            # div(
-            #   class = glue("ms-Grid-col ms-sm{4} ms-xl{4}"),
-            # ),
             div(
               class = glue("ms-Grid-col ms-sm{12} ms-xl{12}"),
               style = "text-align: center",
-              shiny.fluent::Dropdown.shinyInput(
-                inputId = ns("selected_year"),
-                style = list(textAlign = "center", width = "100%"),
-                calloutProps = list(directionalHintFixed = TRUE, calloutMaxHeight = 350),
-                #dropdown = list(width = "40%"),
-                # styles = list(
-                #   dropdown = list(width = "50%"),
-                #   dropdownItem = list(height = "20px"),
-                #   dropdownOptions = list(height = "40px")
-                # ),
-                
-                label = "Select year",
-                options = lapply(sort(1980:2019, decreasing = TRUE), function(x) list(key = x, text = glue::glue("{x}"))),
-                value = 2019
-              )
+              uiOutput(ns("ui_select_year"))
             )
             
           ),
@@ -176,6 +159,18 @@ mod_popular_by_year_server <- function(id, r){
     ## reactiveValues for this mod
     r_mod_pby = reactiveValues()
     
+    output$ui_select_year = renderUI({
+      req(r$current_year, r$years, opened())
+      shiny.fluent::Dropdown.shinyInput(
+        inputId = ns("selected_year"),
+        style = list(textAlign = "center", width = "100%"),
+        calloutProps = list(directionalHintFixed = TRUE, calloutMaxHeight = 350),
+        label = "Select year",
+        options = lapply(sort(r$years, decreasing = TRUE), function(x) list(key = x, text = glue::glue("{x}"))),
+        value = r$current_year
+      )
+    })
+    
     output$title_box2 = renderUI({
       req(input$selected_year, opened())
       #x = 2019
@@ -183,24 +178,24 @@ mod_popular_by_year_server <- function(id, r){
     })
     
     output$title_box3 = renderUI({
-      req(r$current_year, opened())
+      req(input$selected_year, opened())
       #x = 2019
       glue::glue("Details for Popular Topics {input$selected_year}")
     })
     
     
-    observeEvent(r$current_year, {
-      req(r$current_year, opened())
-      
-      shiny.fluent::updateDropdown.shinyInput(
-        inputId = "selected_year",
-        options = lapply(sort(r$start_year:r$current_year, decreasing = TRUE), function(x) list(key = x, text = glue::glue("{x}"))),
-        value = r$current_year
-      )
-    })
+    # observeEvent(input$selected_year, {
+    #   req(input$selected_year, opened())
+    #   
+    #   shiny.fluent::updateDropdown.shinyInput(
+    #     inputId = "selected_year",
+    #     options = lapply(sort(r$start_year:r$current_year, decreasing = TRUE), function(x) list(key = x, text = glue::glue("{x}"))),
+    #     value = r$current_year
+    #   )
+    # })
     
     output$box1_text = renderUI({
-      req(r$current_year, opened())
+      req(input$selected_year, opened())
       print(class(input$selected_year))
       req(input$selected_year == r$current_year)
       
@@ -216,7 +211,7 @@ mod_popular_by_year_server <- function(id, r){
     # })
     
     output$plot_box2 = echarts4r::renderEcharts4r({
-      req(r$n_doc_year, r$topic, input$dropdown_most_popular, r$topic_evo_concatenated, opened())
+      req(input$selected_year, r$n_doc_year, r$topic, input$dropdown_most_popular, r$topic_evo_concatenated, opened())
       
       color <- "#953386"
       topics = r$topic %>% 
