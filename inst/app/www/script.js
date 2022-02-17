@@ -87,7 +87,7 @@ $(document).ready(function() {
   //console.log(React.createElement('Icon', {icon: 'fa-link'}));
   
   // menu for small screens
-  $('#menu').click(function(e) {
+  $("#menu, .ms-Nav-compositeLink a").click(function(e) {
     //console.log("clicked");
     
     $(".sidenav").toggleClass("sidenav-opened");
